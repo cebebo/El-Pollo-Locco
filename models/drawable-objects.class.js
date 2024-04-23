@@ -6,7 +6,7 @@ class DrawableObject {
     y = 135;    
     height = 295;
     width = 150;
-
+    idealFrame = [0,0,0,0];
 
     loadImage(path) {
         this.img = new Image();
@@ -31,7 +31,7 @@ class DrawableObject {
             ctx.beginPath();
             ctx.lineWidth = '2';
             ctx.strokeStyle = 'green';
-            ctx.rect(this.x, this.y, this.width, this.height);
+            ctx.rect(this.x + this.idealFrame[0], this.y + this.idealFrame[1], this.width - this.idealFrame[2], this.height - this.idealFrame[3]);
             ctx.stroke();
         }
     }

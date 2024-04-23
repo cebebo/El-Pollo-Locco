@@ -48,13 +48,13 @@ class MovableObject extends DrawableObject {
     }
 
     isColliding(obj) {
-        return (this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) &&
-            (this.y + this.height) >= obj.y &&
-            (this.y) <= (obj.y + obj.height); 
+        return (this.x + this.width - this.idealFrame[2]) >= obj.x && this.x + this.idealFrame[0] <= (obj.x + obj.width) &&
+            (this.y + this.height - this.idealFrame[3]) >= obj.y &&
+            (this.y + this.idealFrame[1]) <= (obj.y + obj.height); 
     }
 
     hit() {
-        this.energy -= 2;
+        this.energy -= 0.2;
         if (this.energy < 0) { this.energy = 0; }
         else {
             this.lastHit = new Date().getTime();
