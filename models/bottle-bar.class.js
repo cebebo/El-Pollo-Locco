@@ -18,8 +18,14 @@ class BottleBar extends Bars {
     constructor() {
         super();
         this.loadImages(this.STATUS_BOTTLES);
-        this.setPercentage(76, this.STATUS_BOTTLES);
+        this.setPercentage(0, this.STATUS_BOTTLES);
         
     }  
+
+    // setPercentage(percentage) {
+    //     this.percentage = percentage;
+    //     let path = this.STATUS_ENERGY[this.resolveImageIndex()];
+    //     this.img = this.imageCache[path];
+    // }
 
 }

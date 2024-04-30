@@ -18,7 +18,7 @@ class CoinsBar extends Bars {
     constructor() {
         super();
         this.loadImages(this.STATUS_COINS);
-        this.setPercentage(80, this.STATUS_COINS);
+        this.setPercentage(0, this.STATUS_COINS);
     }
 
     

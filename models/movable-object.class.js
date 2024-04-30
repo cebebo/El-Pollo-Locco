@@ -4,8 +4,9 @@ class MovableObject extends DrawableObject {
     speedY = 0;
     acceleration = 2;
     otherDirection = false;
-    energy = 100;
+    energy = 300;
     lastHit = 0;
+ 
 
     applyGravity() {
         setInterval(() => {
@@ -17,14 +18,31 @@ class MovableObject extends DrawableObject {
     }
     
     aboveGround() {
+        if (this instanceof ThrowableObject) {
+            // return true;
+            return this.y < 360;
+        } else {
         return this.y < 135;
+        }
     }
 
-
+    jumpAttack() {
+        return this.y < 50;
+    }
 
     autoMoveLeft() {
         setInterval(() => {
             this.moveLeft();
+        }, 1000 / 60);
+    }
+
+    setTimeToTurnAround() {
+        return Math.random() * 10;
+    }
+
+    stopMoving() {
+        setInterval(() => {
+            this.moveRight();
         }, 1000 / 60);
     }
 
@@ -47,10 +65,11 @@ class MovableObject extends DrawableObject {
         this.speedY = 25;
     }
 
-    isColliding(obj) {
-        return (this.x + this.width - this.idealFrame[2]) >= obj.x && this.x + this.idealFrame[0] <= (obj.x + obj.width) &&
-            (this.y + this.height - this.idealFrame[3]) >= obj.y &&
-            (this.y + this.idealFrame[1]) <= (obj.y + obj.height); 
+    isColliding(obj) { 
+        return (this.x + this.idealFrame[0] + this.width - this.idealFrame[2]) >= obj.x + obj.idealFrame[0] && 
+               this.x + this.idealFrame[0] <= (obj.x + obj.idealFrame[0] + obj.width - obj.idealFrame[2]) &&
+               (this.y + this.idealFrame[1] + this.height - this.idealFrame[3]) >= obj.y + obj.idealFrame[1] &&
+               (this.y + this.idealFrame[1]) <= (obj.y + obj.idealFrame[1] + obj.height - obj.idealFrame[3]); 
     }
 
     hit() {

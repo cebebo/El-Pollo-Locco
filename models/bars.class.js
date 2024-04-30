@@ -1,4 +1,6 @@
 class Bars extends DrawableObject {
+percentage = 0;
+
     resolveImageIndex() {
         if (this.percentage == 100) { return 5; }
         else if (this.percentage > 75) { return 4; }
