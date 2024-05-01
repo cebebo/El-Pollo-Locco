@@ -88,6 +88,24 @@ class MovableObject extends DrawableObject {
         let timePassed = new Date().getTime() - this.lastHit;
         return timePassed < 500;
     }
+
+    rotateObject(maxWidth, speed) {
+        setInterval(() => {
+            if (this.rotation) { 
+                this.width -= speed; 
+                this.x += speed/2;
+            }
+            if (this.width == 0) { 
+                this.rotation = false;
+                this.otherDirection = !this.otherDirection;
+            }
+            if (!this.rotation) { 
+                this.width += speed; 
+                this.x -= speed/2;
+            }
+            if (this.width == maxWidth) { this.rotation = true; }
+        }, 30);
+    }
 }
 
 

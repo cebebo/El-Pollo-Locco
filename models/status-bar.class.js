@@ -1,9 +1,6 @@
 class StatusBar extends Bars {
 
-    x = 30;
-    y = 10;
-    height = 50;
-    width = 200;
+    x = 10;
     percentage = 100;
 
     STATUS_ENERGY = [

@@ -1,9 +1,6 @@
 class BottleBar extends Bars {
 
-    x = 250;
-    y = 10;
-    height = 50;
-    width = 200;
+    x = 180;
     percentage = 0;
 
     STATUS_BOTTLES = [

@@ -12,22 +12,9 @@ constructor() {
     super().loadImage('img/8_coin/coin_1.png');
     this.x = 200 + Math.random() * 2000;
     this.y = 30 + Math.random() * 250;
-    this.rotateCoin();    
+    this.rotateObject(150, 10);    
 }
 
-rotateCoin() {
-    setInterval(() => {
-        if (this.rotation) { 
-            this.width -= 10; 
-            this.x += 5;
-        }
-        if (this.width == 0) { this.rotation = false; }
-        if (!this.rotation) { 
-            this.width += 10; 
-            this.x -= 5;
-        }
-        if (this.width == 150) { this.rotation = true; }
-    }, 30);
-}
+
     
 }

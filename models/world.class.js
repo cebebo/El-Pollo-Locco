@@ -6,6 +6,7 @@ class World {
     backgroundObjects = level1.backgroundObjects;
     coins = level1.coins;
     bottles = level1.bottles;
+    beans = level1.beans;
     level = level1;
     powerLine = new PowerLine();
     fart = new Fart();
@@ -16,6 +17,7 @@ class World {
     statusBar = new StatusBar();
     bottlesBar = new BottleBar();
     coinsBar = new CoinsBar();
+    beansBar = new BeansBar();
     throwableObjects = [];
     SOUND_COIN = new Audio('audio/coin.wav');
     SOUND_BOTTLE = new Audio('audio/bottle.wav');
@@ -173,6 +175,15 @@ class World {
                 this.bottlesBar.setPercentage(this.bottlesBar.percentage, this.bottlesBar.STATUS_BOTTLES);
             }
         });
+        this.level.beans.forEach((bean) => {
+            if (this.character.isColliding(bean) && this.beansBar.percentage < 100) {
+                let hitBean = this.beans.indexOf(bean);
+                this.beans.splice(hitBean, 1);
+                this.SOUND_BOTTLE.play();
+                this.beansBar.percentage += 20;
+                this.beansBar.setPercentage(this.beansBar.percentage, this.beansBar.STATUS_BEANS);
+            }
+        });
     }
 
     draw() {
@@ -182,6 +193,7 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.level.beans);
         this.addToMap(this.character);
         this.addObjectsToMap(this.throwableObjects);
         this.addObjectsToMap(this.level.enemies);
@@ -189,6 +201,7 @@ class World {
         this.addToMap(this.statusBar);
         this.addToMap(this.bottlesBar);
         this.addToMap(this.coinsBar);
+        this.addToMap(this.beansBar);
         if (this.keyboard.SPACE) this.addToMap(this.powerLine);
         if (this.keyboard.DOWN) this.addToMap(this.fart);
 

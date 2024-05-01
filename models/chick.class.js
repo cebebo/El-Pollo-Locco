@@ -1,8 +1,8 @@
 class Chick extends MovableObject {
 
-    y = 385;
-    height = 40;
-    width = 30;
+    y = 365;
+    height = 60;
+    width = 45;
     idealFrame = [0, 0, 0, 0];
     xCol = this.x + this.idealFrame[0];
     yCol = this.y + this.idealFrame[1];
@@ -33,6 +33,7 @@ class Chick extends MovableObject {
             if (counter > turnAroundTime * 60) {
                 counter = 0;
                 turnAroundTime = this.setTimeToTurnAround();
+                this.speed = 0.15 + Math.random() * 1;
             }
             if (turnAroundTime <= 8) {
                 this.moveLeft();

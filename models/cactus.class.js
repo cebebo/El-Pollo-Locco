@@ -1,0 +1,3 @@
+class Cactus extends MovableObject {
+    
+}

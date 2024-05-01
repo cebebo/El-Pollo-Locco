@@ -1,4 +1,7 @@
 class Bars extends DrawableObject {
+y = 0;
+height = 40;
+width = 150;
 percentage = 0;
 
     resolveImageIndex() {
