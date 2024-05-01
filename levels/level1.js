@@ -19,6 +19,10 @@ let level1 = new Level(
         new Chick(),
         new Chick(),
         new Chick(),
+        new Cactus(),
+        new Cactus(),
+        new Cactus(),
+        new Cactus(),
         new Endboss()
     ],
     [
@@ -70,6 +74,12 @@ let level1 = new Level(
         new Bottle()
     ],
     [
+        new Bean(),
+        new Bean(),
+        new Bean(),
+        new Bean(),
+        new Bean(),
+        new Bean(),
         new Bean()
     ]
 );
