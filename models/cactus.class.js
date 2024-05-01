@@ -1,8 +1,9 @@
 class Cactus extends MovableObject {
 x = 300;
-y = 250;
-height = 200;
-width = 65;
+y = 135;
+height = 300;
+width = 225;
+idealFrame = [55, 10, 95, 10]
 
 IMAGES_KILLED_CACTUS = [
     'img/3_enemies_cactus/cactus-D1.png',

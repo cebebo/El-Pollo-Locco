@@ -117,7 +117,7 @@ class World {
                     this.statusBar.setPercentage(this.character.energy, this.statusBar.STATUS_ENERGY);
                 }
                 else {
-                    if (!this.character.jumpAttack() && !this.character.isHurt()) {
+                    if (!this.character.jumpAttack() && !this.character.isHurt() && !enemy instanceof Cactus) {
                         this.character.jump();
                         this.deadEnemy(enemy);
                         setTimeout(() => {

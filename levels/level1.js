@@ -20,9 +20,9 @@ let level1 = new Level(
         new Chick(),
         new Chick(),
         new Cactus(),
-        new Cactus(),
-        new Cactus(),
-        new Cactus(),
+        // new Cactus(),
+        // new Cactus(),
+        // new Cactus(),
         new Endboss()
     ],
     [
