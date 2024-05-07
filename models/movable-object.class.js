@@ -1,12 +1,13 @@
 class MovableObject extends DrawableObject {
-    
+
     speed;
     speedY = 0;
     acceleration = 2;
     otherDirection = false;
     energy = 300;
     lastHit = 0;
- 
+   
+
 
     applyGravity() {
         setInterval(() => {
@@ -16,18 +17,17 @@ class MovableObject extends DrawableObject {
             }
         }, 1000 / 25);
     }
-    
+
     aboveGround() {
         if (this instanceof ThrowableObject) {
-            // return true;
             return this.y < 360;
         } else {
-        return this.y < 135;
+            return this.y < 135;
         }
     }
 
-    jumpAttack() {
-        return this.y < 50;
+    jumpAttack(enemy) {
+        return (this.y + this.idealFrame[1] + this.height - this.idealFrame[3]) < (enemy.y + enemy.idealFrame[1]);
     }
 
     autoMoveLeft() {
@@ -38,12 +38,6 @@ class MovableObject extends DrawableObject {
 
     setTimeToTurnAround() {
         return Math.random() * 10;
-    }
-
-    stopMoving() {
-        setInterval(() => {
-            this.moveRight();
-        }, 1000 / 60);
     }
 
     moveRight() {
@@ -61,22 +55,31 @@ class MovableObject extends DrawableObject {
         this.currentImage++;
     }
 
-    playAnimationOnce(images) {
-        for (let i = 0; i < images.length; i++) {
-            this.img = this.imageCache[i];
+    playAnimationOnce(images, i, time) {
+        let animatedIntervall = setInterval(() => {
+            let path = images[i];
+            this.img = this.imageCache[path];
             i++;
-        }
+            if (i == images.length) clearInterval(animatedIntervall);
+        }, time);
+    }
+
+    playAnimationNoLoop(images) {
+            let path = images[frameCounter];
+            this.img = this.imageCache[path];
+            if (frameCounter < images.length-1) frameCounter++;
+
     }
 
     jump() {
         this.speedY = 25;
     }
 
-    isColliding(obj) { 
-        return (this.x + this.idealFrame[0] + this.width - this.idealFrame[2]) >= obj.x + obj.idealFrame[0] && 
-               this.x + this.idealFrame[0] <= (obj.x + obj.idealFrame[0] + obj.width - obj.idealFrame[2]) &&
-               (this.y + this.idealFrame[1] + this.height - this.idealFrame[3]) >= obj.y + obj.idealFrame[1] &&
-               (this.y + this.idealFrame[1]) <= (obj.y + obj.idealFrame[1] + obj.height - obj.idealFrame[3]); 
+    isColliding(obj) {
+        return (this.x + this.idealFrame[0] + this.width - this.idealFrame[2]) >= obj.x + obj.idealFrame[0] &&
+            this.x + this.idealFrame[0] <= (obj.x + obj.idealFrame[0] + obj.width - obj.idealFrame[2]) &&
+            (this.y + this.idealFrame[1] + this.height - this.idealFrame[3]) >= obj.y + obj.idealFrame[1] &&
+            (this.y + this.idealFrame[1]) <= (obj.y + obj.idealFrame[1] + obj.height - obj.idealFrame[3]);
     }
 
     hit() {
@@ -98,17 +101,17 @@ class MovableObject extends DrawableObject {
 
     rotateObject(maxWidth, speed) {
         setInterval(() => {
-            if (this.rotation) { 
-                this.width -= speed; 
-                this.x += speed/2;
+            if (this.rotation) {
+                this.width -= speed;
+                this.x += speed / 2;
             }
-            if (this.width == 0) { 
+            if (this.width == 0) {
                 this.rotation = false;
                 this.otherDirection = !this.otherDirection;
             }
-            if (!this.rotation) { 
-                this.width += speed; 
-                this.x -= speed/2;
+            if (!this.rotation) {
+                this.width += speed;
+                this.x -= speed / 2;
             }
             if (this.width == maxWidth) { this.rotation = true; }
         }, 30);

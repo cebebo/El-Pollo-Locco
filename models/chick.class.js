@@ -3,7 +3,7 @@ class Chick extends MovableObject {
     y = 365;
     height = 60;
     width = 45;
-    idealFrame = [0, 0, 0, 0];
+    idealFrame = [7, 7, 14, 14];
     xCol = this.x + this.idealFrame[0];
     yCol = this.y + this.idealFrame[1];
     wCol = this.width - this.idealFrame[2];
@@ -17,10 +17,10 @@ class Chick extends MovableObject {
         'img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
     ]
 
-    constructor() {
+    constructor(x) {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
-        this.x = 1200 + Math.random() * 2500;
+        this.x = x + 700 + Math.random() * 700;
         this.speed = 0.15 + Math.random() * 0.25;
         this.animate();
     }

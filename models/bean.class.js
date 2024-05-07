@@ -5,10 +5,10 @@ width = 24;
 height = 40;
 rotation = true;
 
-constructor() {
+constructor(x) {
     super().loadImage('img/6_bean/bean.png');
-    this.x = 200 + Math.random() * 2000;
-    this.y = 30 + Math.random() * 250;
+    this.x = x + 700 + Math.random() * 700;
+    this.y = 55 + Math.random() * 225;
     this.rotateObject(24, 1);
 }
 

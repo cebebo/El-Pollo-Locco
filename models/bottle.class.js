@@ -7,8 +7,8 @@ class Bottle extends MovableObject {
     resizer = true;
     SOUND_BOTTLE = new Audio('audio/bottle.wav');
 
-    constructor() {
+    constructor(x) {
         super().loadImage('img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
-        this.x = 200 + Math.random() * 2000;
+        this.x = x + 700 + Math.random() * 700;
     }
 }

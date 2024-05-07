@@ -2,6 +2,8 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let direction = 'right';
+let frameCounter = 0;
+let gameCheckpoint = 0;
 
 function init() {
     canvas = document.getElementById('canvas');

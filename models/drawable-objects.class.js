@@ -41,15 +41,15 @@ class DrawableObject {
     drawFrame(ctx) {
         if (this instanceof Character || this instanceof Chicken || this instanceof Chick || 
             this instanceof Endboss || this instanceof Coin || this instanceof Bottle || 
-            this instanceof ThrowableObject || this instanceof Fart || this instanceof Cactus) {
+            this instanceof ThrowableObject || this instanceof FartableObject || this instanceof Cactus || this instanceof Bean) {
             ctx.beginPath();
             ctx.lineWidth = '2';
             if (this instanceof Character || this instanceof Chicken || this instanceof Chick || 
-                this instanceof Endboss || this instanceof Fart || this instanceof Cactus) {
+                this instanceof Endboss || this instanceof FartableObject || this instanceof Cactus) {
                 ctx.strokeStyle = 'green';
                 ctx.rect(this.x + this.idealFrame[0], this.y + this.idealFrame[1], this.width - this.idealFrame[2], this.height - this.idealFrame[3]);
             }
-            if (this instanceof Coin || this instanceof Bottle || this instanceof ThrowableObject) {
+            if (this instanceof Coin || this instanceof Bottle || this instanceof ThrowableObject || this instanceof Bean) {
                 ctx.strokeStyle = 'red';
                 ctx.rect(this.x + this.idealFrame[0], this.y + this.idealFrame[1], this.width - this.idealFrame[2], this.height - this.idealFrame[3]);
                 
