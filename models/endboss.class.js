@@ -3,11 +3,24 @@ class Endboss extends MovableObject {
     height = 375;
     width = 255;
     idealFrame = [20, 66, 28, 80];
+    speed = 2;
+    energy = 100;
     xCol = this.x + this.idealFrame[0];
     yCol = this.y + this.idealFrame[1];
     wCol = this.width - this.idealFrame[2];
     hCol = this.height - this.idealFrame[3];
-  
+
+    animationEndbossStart = world.stopCamera();
+    forward = true;
+    freeze = false;
+    deadEndboss = false;
+
+    SOUND_DEAD = new Audio('audio/endbossDead.wav');
+    SOUND_START = new Audio('audio/endboss.wav');
+    SOUND_HURT = new Audio('audio/endbossHurt.wav');
+    SOUND_FREEZE = new Audio('audio/endbossFreeze.wav');
+    SOUND_ATTACK = new Audio('audio/endbossAttack.wav');
+    
 
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -50,17 +63,101 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/5_dead/G26.png'
     ];
 
+    IMAGES_FREEZE = 'img/4_enemie_boss_chicken/4_hurt/G77.png';
+
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
+        this.loadImage(this.IMAGES_FREEZE);
         this.loadImages(this.IMAGES_WALKING);
-        this.x = world.level.level_end_x - 150;
+        this.loadImages(this.IMAGES_ALERTNESS);
+        this.loadImages(this.IMAGES_ATTACK);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_DEAD);
+        this.x = world.level.level_end_x + 250;
 
         this.animate();
     }
 
     animate() {
         setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
-        }, 350);
+            if (this.animationEndbossStart) {       
+                if (this.freeze && !this.isDead()) this.freezed();         
+                else if (this.isDead()) this.dead();
+                else if (this.isHurt()) this.hurt();                
+                else if (this.attackMode()) this.attackCharacter();
+                else if (this.alertMode()) this.followCharacter();
+                else this.checkDirection();
+            }
+        }, 150);
+    }
+
+    checkDirection() {
+        if (this.x < world.lastCheckpoint.x + 1800) this.forward = false;
+        if (this.x > world.lastCheckpoint.x + 2350) this.forward = true;
+        this.walkDirection();
+        this.playAnimation(this.IMAGES_WALKING);
+    }
+
+    walkDirection() {
+        if (this.forward) {
+            this.moveLeft();
+            this.otherDirection = false;
+        }
+        else {
+            this.moveRight();
+            this.otherDirection = true;
+        }
+        this.speed = 2;
+    }
+
+    alertMode() {
+        return (world.character.x + 300) > this.x && (world.character.x + world.character.width - 300) < this.x + this.width;
+    }
+
+    followCharacter() {
+        this.SOUND_START.play();
+        this.speed = 12;
+        if (world.character.x + (world.character.width / 2) < this.x + (this.width / 2)) this.forward = true;
+        else this.forward = false;
+        this.walkDirection();
+        this.playAnimation(this.IMAGES_ALERTNESS);
+    }
+
+    attackMode() {
+        return (world.character.x + 150) > this.x && (world.character.x + world.character.width - 150) < this.x + this.width;
+    }
+
+    attackCharacter() {
+        this.SOUND_ATTACK.play();
+        this.speed = 17;
+        if (world.character.x + (world.character.width / 2) < this.x + (this.width / 2)) this.forward = true;
+        else this.forward = false;
+        this.walkDirection();
+        this.playAnimation(this.IMAGES_ATTACK);
+    }
+
+    freezed() {
+        if (this.freeze) {
+            this.loadImage(this.IMAGES_FREEZE);
+            this.speed = 0;
+            setTimeout(() => { this.freeze = false }, 5000);
+        }
+    }
+
+    hurt() {
+        this.playAnimation(this.IMAGES_HURT);
+        this.SOUND_HURT.play();
+    }
+
+    dead() {
+        this.freeze = false;
+        this.playAnimation(this.IMAGES_DEAD);
+        this.y += 30;
+        if (this.deadEndboss) this.SOUND_DEAD.play();
+        this.deadEndboss=false;
+        setTimeout(() => { 
+            this.SOUND_DEAD.pause() 
+            world.character.win += 1;
+        }, 1000);
     }
 }

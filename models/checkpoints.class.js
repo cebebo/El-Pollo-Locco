@@ -7,6 +7,7 @@ class Checkpoint extends MovableObject {
     COINS;
     BOTTLES;
     BEANS;
+    CLOUDS = 5;
     
     constructor(x, enemies, cacti, coins, bottles, beans){
         super().loadImage('img/checkpoint.png');

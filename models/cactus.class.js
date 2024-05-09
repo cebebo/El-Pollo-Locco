@@ -3,7 +3,6 @@ class Cactus extends MovableObject {
     y = 135;
     height = 300;
     width = 225;
-    idealFrame = [55, 10, 95, 10];
     dead = false;
 
     IMAGES_KILLED_CACTUS = [

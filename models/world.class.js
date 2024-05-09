@@ -25,7 +25,7 @@ class World {
     throwableObjects = [];
     SOUND_COIN = new Audio('audio/coin.wav');
     SOUND_BOTTLE = new Audio('audio/bottle.wav');
-    SOUND_BEAN = new Audio('audio/bean.wav');
+    SOUND_BEAN = new Audio('audio/bean2.wav');
     SOUND_LOADPOWER = new Audio('audio/loadPower2.wav');
     SOUND_FART = new Audio('audio/fart2.wav');
     SOUND_DEAD_CACTUS = new Audio('audio/deadCactus.wav');
@@ -38,6 +38,8 @@ class World {
     cactusKiller = true;
     enemyKiller = true;
     bottleKiller = true;
+    activeCheckpoint = true;
+    endbossBarActive = false;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -60,9 +62,10 @@ class World {
             this.checkFarting();
             this.correctPosition();
             this.corpseEraser();
+            if (!this.stopCamera()) this.endbossBarActive = true;
         }, 50);
         setInterval(() => {
-            console.log('Feide: ', this.enemies.length, ' | Kakteen: ', this.cacti.length, ' | Coins: ', this.coins.length, ' | Bottles: ', this.bottles.length, ' | Beans: ', this.beans.length);
+            console.log('Checkpoint:', gameCheckpoint, 'Enemies:', this.enemies.length, ' | Kakteen:', this.cacti.length, ' | Coins:', this.coins.length, ' | Bottles:', this.bottles.length, ' | Beans:', this.beans.length);
         }, 250);
     }
 
@@ -139,6 +142,7 @@ class World {
         this.collisionsWithCacti();
         this.collisionOfBottleWithGround();
         this.collisionWithCheckpoint();
+        this.collisionOfFartWithEndboss();
     }
 
     collisionsWithEnemies() {
@@ -149,14 +153,26 @@ class World {
                     flyingBottle.y = enemy.y;
                     flyingBottle.broken = true;
                     this.enemyKiller = false;
-                    this.deadEnemy(enemy);
-                    setTimeout(() => {
-                        this.throwableObjects.splice(flyingBottle, 1);
-                    }, 1000);
+                    this.checkEnemyType(enemy);
                 };
             });
 
         });
+    }
+
+    checkEnemyType(enemy) {
+        if (enemy instanceof Chick || enemy instanceof Chicken) {
+            this.deadEnemy(enemy);
+            setTimeout(() => {
+                this.throwableObjects.splice(flyingBottle, 1);
+            }, 1000);
+        }
+        if (enemy instanceof Endboss) {
+            enemy.hit();
+            this.enemyKiller = true;
+            this.endbossBar.setPercentage(enemy.energy, this.endbossBar.STATUS_ENERGY_ENDBOSS);
+            this.checkIfEndbossIsKilled(enemy);
+        }
     }
 
     collisionOfBottleWithGround() {
@@ -189,13 +205,24 @@ class World {
         });
     }
 
+    collisionOfFartWithEndboss() {
+        if (this.runningFart.length > 0) {
+            this.level.enemies.forEach((endboss) => {
+                if (endboss instanceof Endboss) {
+                    if (this.runningFart[0].isColliding(endboss)) endboss.freeze = true;
+                }
+            })
+        }
+    }
+
     collisionWithCheckpoint() {
         this.level.checkpoints.forEach((checkpoint) => {
-            if (this.character.isColliding(checkpoint)) {
+            if (this.character.isColliding(checkpoint) && this.activeCheckpoint) {
+                this.activeCheckpoint = false;
                 gameCheckpoint++;
                 checkpoint.height = 10;
                 this.spawnObjectsInNextArea(checkpoint);
-
+                setTimeout(() => { this.activeCheckpoint = true }, 5000);
             }
         })
     }
@@ -210,6 +237,7 @@ class World {
         for (let i = 0; i < checkpoint.COINS; i++) this.level.coins.push(new Coin(this.character.x));
         for (let i = 0; i < checkpoint.BOTTLES; i++) this.level.bottles.push(new Bottle(this.character.x));
         for (let i = 0; i < checkpoint.BEANS; i++) this.level.beans.push(new Bean(this.character.x));
+        for (let i = 0; i < checkpoint.CLOUDS; i++) this.level.clouds.push(new Cloud(this.character.x + 600));
         this.buildMoreLandscape();
         if (gameCheckpoint == this.checkpoints.length) this.enemies.push(new Endboss());
     }
@@ -244,8 +272,19 @@ class World {
             if (!this.character.jumpAttack(enemy) && !this.character.isHurt() && this.enemyKiller) {
                 this.character.jump();
                 this.SOUND_JUMPATTACK.play();
-                this.enemyKiller = false;
-                if (enemy instanceof Chick || enemy instanceof Chicken) this.deadEnemy(enemy);
+                if (enemy instanceof Chick || enemy instanceof Chicken) {
+                    this.enemyKiller = false;
+                    this.deadEnemy(enemy);
+                }
+                if (enemy instanceof Endboss && enemy.freeze) {
+                    this.enemyKiller = false;
+                    enemy.hit();
+                    this.endbossBar.setPercentage(enemy.energy, this.endbossBar.STATUS_ENERGY_ENDBOSS);
+                    this.character.jump();
+                    this.checkIfEndbossIsKilled(enemy);
+                    enemy.freeze = false;
+                    setTimeout(() => { this.enemyKiller = true }, 150);
+                }
             }
         }
     }
@@ -261,6 +300,13 @@ class World {
             this.enemyKiller = true;
         }, 500);
 
+    }
+
+    checkIfEndbossIsKilled(enemy) {
+        if (enemy.energy <= 0) {
+            enemy.deadEndboss = true;
+            setTimeout(() => { this.enemies.splice(enemy, 1) }, 2000);
+        }
     }
 
     checkCollectables() {
@@ -316,7 +362,6 @@ class World {
 
     stopCamera() {
         return this.character.x < this.lastCheckpoint.x + 1950;
-        // return this.character.x < 500;
     }
 
     drawMovableScreenContent() {
@@ -348,7 +393,7 @@ class World {
         this.addToMap(this.bottlesBar);
         this.addToMap(this.coinsBar);
         this.addToMap(this.beansBar);
-        this.addToMap(this.endbossBar);
+        if (this.endbossBarActive) this.addToMap(this.endbossBar);
     }
 
     drawEnemies() {
@@ -370,7 +415,7 @@ class World {
     addToMap(mo) {
         if (mo.otherDirection) { this.flipImage(mo); }
         mo.draw(this.ctx);
-        // mo.drawFrame(this.ctx);
+        mo.drawFrame(this.ctx);
         if (mo.otherDirection) { this.flipImageBack(mo); }
     }
 

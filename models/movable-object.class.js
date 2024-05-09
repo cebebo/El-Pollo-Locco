@@ -4,7 +4,7 @@ class MovableObject extends DrawableObject {
     speedY = 0;
     acceleration = 2;
     otherDirection = false;
-    energy = 300;
+    energy; 
     lastHit = 0;
    
 
@@ -83,7 +83,8 @@ class MovableObject extends DrawableObject {
     }
 
     hit() {
-        this.energy -= 0.2;
+        if (this instanceof Endboss) this.energy -= 20;
+        else this.energy -= 5;
         if (this.energy < 0) { this.energy = 0; }
         else {
             this.lastHit = new Date().getTime();
