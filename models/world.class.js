@@ -64,9 +64,6 @@ class World {
             this.corpseEraser();
             if (!this.stopCamera()) this.endbossBarActive = true;
         }, 50);
-        setInterval(() => {
-            console.log('Checkpoint:', gameCheckpoint, 'Enemies:', this.enemies.length, ' | Kakteen:', this.cacti.length, ' | Coins:', this.coins.length, ' | Bottles:', this.bottles.length, ' | Beans:', this.beans.length);
-        }, 250);
     }
 
     correctPosition() {
@@ -90,7 +87,7 @@ class World {
             this.active = true;
             this.power++;
             if (this.power >= 20) { this.power = 20 };
-            this.SOUND_LOADPOWER.play();
+            if (noises) this.SOUND_LOADPOWER.play();
             this.powerLine.width = (this.power * 6);
         }
         if (this.keyboard.SPACE == false && this.active == true) {
@@ -102,7 +99,7 @@ class World {
             this.active = false;
             this.bottlesBar.percentage -= 20;
             this.bottlesBar.setPercentage(this.bottlesBar.percentage, this.bottlesBar.STATUS_BOTTLES);
-            this.character.SOUND_SHOT.play();
+            if (noises) this.character.SOUND_SHOT.play();
         }
     }
 
@@ -111,11 +108,11 @@ class World {
             this.activeFart = true;
             this.fartStrength++;
             if (this.fartStrength >= 20) this.fartStrength = 20;
-            this.SOUND_LOADPOWER.play();
+            if (noises) this.SOUND_LOADPOWER.play();
             this.powerLine.width = (this.fartStrength * 6);
         }
         if (!this.keyboard.DOWN && this.activeFart == true) {
-            this.SOUND_FART.play();
+            if (noises) this.SOUND_FART.play();
             let currentFart = new FartableObject(this.character.x + this.checkFartDirection(), this.character.y + 190);
             this.runningFart.push(currentFart);
             let fartIntervall = setInterval(() => {
@@ -156,7 +153,6 @@ class World {
                     this.checkEnemyType(enemy);
                 };
             });
-
         });
     }
 
@@ -256,7 +252,7 @@ class World {
     deadCactus(cactus) {
         let killedCactus = this.cacti.indexOf(cactus);
         cactus.dead = true;
-        this.SOUND_DEAD_CACTUS.play();
+        if (noises) this.SOUND_DEAD_CACTUS.play();
         setTimeout(() => {
             this.cacti.splice(killedCactus, 1);
             this.cactusKiller = true;
@@ -271,7 +267,7 @@ class World {
         else {
             if (!this.character.jumpAttack(enemy) && !this.character.isHurt() && this.enemyKiller) {
                 this.character.jump();
-                this.SOUND_JUMPATTACK.play();
+                if (noises) this.SOUND_JUMPATTACK.play();
                 if (enemy instanceof Chick || enemy instanceof Chicken) {
                     this.enemyKiller = false;
                     this.deadEnemy(enemy);
@@ -293,13 +289,12 @@ class World {
         let killedEnemy = this.enemies.indexOf(enemy);
         enemy.dead = true;
         enemy.speed = 0;
-        if (enemy instanceof Chicken) this.character.SOUND_HIT_CHICKEN.play();
-        if (enemy instanceof Chick) this.character.SOUND_HIT_CHICK.play();
+        if (enemy instanceof Chicken) if (noises) this.character.SOUND_HIT_CHICKEN.play();
+        if (enemy instanceof Chick) if (noises) this.character.SOUND_HIT_CHICK.play();
         setTimeout(() => {
             this.enemies.splice(killedEnemy, 1);
             this.enemyKiller = true;
         }, 500);
-
     }
 
     checkIfEndbossIsKilled(enemy) {
@@ -324,7 +319,7 @@ class World {
     collectCoin(coin) {
         let hitCoin = this.coins.indexOf(coin);
         this.coins.splice(hitCoin, 1);
-        this.SOUND_COIN.play();
+        if (noises) this.SOUND_COIN.play();
         this.coinsBar.percentage += 100 / this.maxCoins;
         this.coinsBar.setPercentage(this.coinsBar.percentage, this.coinsBar.STATUS_COINS);
     }
@@ -332,7 +327,7 @@ class World {
     collectBottle(bottle) {
         let hitBottle = this.bottles.indexOf(bottle);
         this.bottles.splice(hitBottle, 1);
-        this.SOUND_BOTTLE.play();
+        if (noises) this.SOUND_BOTTLE.play();
         this.bottlesBar.percentage += 20;
         this.bottlesBar.setPercentage(this.bottlesBar.percentage, this.bottlesBar.STATUS_BOTTLES);
     }
@@ -340,7 +335,7 @@ class World {
     collectBean(bean) {
         let hitBean = this.beans.indexOf(bean);
         this.beans.splice(hitBean, 1);
-        this.SOUND_BEAN.play();
+        if (noises) this.SOUND_BEAN.play();
         this.beansBar.percentage += 20;
         this.beansBar.setPercentage(this.beansBar.percentage, this.beansBar.STATUS_BEANS);
     }
@@ -376,6 +371,7 @@ class World {
 
     drawFixedScreenContent() {
         this.drawBars();
+        this.addObjectsToMap(touchController);
     }
 
     drawWhenPressedButton() {
@@ -415,7 +411,7 @@ class World {
     addToMap(mo) {
         if (mo.otherDirection) { this.flipImage(mo); }
         mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
+        // mo.drawFrame(this.ctx);
         if (mo.otherDirection) { this.flipImageBack(mo); }
     }
 

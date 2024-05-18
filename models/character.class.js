@@ -77,7 +77,7 @@ class Character extends MovableObject {
     y = 135;
     height = 295;
     width = 150;
-    energy = 300;
+    energy = 100;
     world;
     win = 3;
     xCol = this.x + this.idealFrame[0];
@@ -119,13 +119,13 @@ class Character extends MovableObject {
             this.SOUND_WALKING.pause();
             if (!this.isDead()) {
                 if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                    if (this.y >= 135 && !this.isHurt()) { this.SOUND_WALKING.play(); }
+                    if (this.y >= 135 && !this.isHurt()) { if (noises) this.SOUND_WALKING.play(); }
                     this.moveRight();
                     this.otherDirection = false;
                     direction = 'right';
                 }
                 if (this.world.keyboard.LEFT && this.x > 0) {
-                    if (this.y >= 135 && !this.isHurt()) { this.SOUND_WALKING.play(); }
+                    if (this.y >= 135 && !this.isHurt()) { if (noises) this.SOUND_WALKING.play(); }
                     this.moveLeft();
                     this.otherDirection = true;
                     direction = 'left';
@@ -165,7 +165,7 @@ class Character extends MovableObject {
             }
             else if (this.sleepTimer >= 500) {
                 this.playAnimation(this.IMAGES_SLEEP);
-                this.SOUND_SLEEPING.play();
+                if (noises) this.SOUND_SLEEPING.play();
             }
             else {
                 this.playAnimation(this.IMAGES_IDLE);
@@ -175,7 +175,7 @@ class Character extends MovableObject {
 
     playSoundJumping() {
         let jumpSound = Math.floor(Math.random() * 5);
-        this.SOUND_JUMPING[jumpSound].play();
+        if (noises) this.SOUND_JUMPING[jumpSound].play();
         this.activeJump = true;
         setTimeout(() => {
             this.activeJump = false;
@@ -184,7 +184,7 @@ class Character extends MovableObject {
 
     playSoundHurting() {
         let hurtSound = Math.floor(Math.random() * 5);
-        this.SOUND_HURT[hurtSound].play();
+        if (noises) this.SOUND_HURT[hurtSound].play();
         this.activeHurt = true;
         setTimeout(() => {
             this.activeHurt = false;
@@ -195,19 +195,29 @@ class Character extends MovableObject {
         this.win += 2
         if (this.win == 5) {
             this.playAnimationNoLoop(this.IMAGES_DEAD);
-            this.SOUND_DEAD.play();
+            if (noises) this.SOUND_DEAD.play();
             let IVgameOver = setInterval(() => {
                 if (this.y < 400) this.y += 0.5;
                 else clearInterval(IVgameOver);
             })
         }
+        setTimeout(() => { this.endscreen(); }, 2000);
+    }
+
+    endscreen() {
+        document.getElementById('canvas').classList.add('d-none');
+        document.getElementById('gameOverImage').classList.remove('d-none');
+        document.getElementById('controllerBar').classList.add('d-none');
+        document.getElementById('iconsBar').classList.add('d-none');
+        document.getElementById('restartButton').classList.remove('d-none');
+        MUSIC.pause();
     }
 
     winning() {
         this.win += 3;
         this.y = 135;
         this.x = world.lastCheckpoint.x + 2100;;
-        this.SOUND_WINNING.play();
+        if (noises) this.SOUND_WINNING.play();
         this.jump();
         this.world.keyboard.RIGHT = true;
         setTimeout(() => {
@@ -218,5 +228,14 @@ class Character extends MovableObject {
                 this.world.keyboard.LEFT = false;
             }, 1100);
         }, 1100);
+        setTimeout(() => { this.winscreen(); }, 3000);
+    }
+
+    winscreen() {
+        document.getElementById('canvas').classList.add('d-none');
+        document.getElementById('levelCompleteImage').classList.remove('d-none');
+        document.getElementById('controllerBar').classList.add('d-none');
+        document.getElementById('iconsBar').classList.add('d-none');
+        MUSIC.pause();
     }
 }

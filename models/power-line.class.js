@@ -1,7 +1,7 @@
 class PowerLine extends MovableObject {
 
     x = 300;
-    y = 440;
+    y = 420;
     width = 0;
     height = 20;
 

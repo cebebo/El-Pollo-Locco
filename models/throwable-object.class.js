@@ -68,7 +68,7 @@ class ThrowableObject extends MovableObject {
         let IVbottleBroken = setInterval(() => {
             if (this.broken) {
                 this.playAnimationOnce(this.IMAGES_BOTTLEEXPLODE, 0, 100);
-                this.SOUND_BREAKING_GLASS.play();
+                if (noises) this.SOUND_BREAKING_GLASS.play();
                 clearInterval(IVbottleBroken);
                 setTimeout(() => {
                     world.bottleKiller = true;

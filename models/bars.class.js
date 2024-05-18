@@ -5,7 +5,7 @@ width = 150;
 percentage = 0;
 
     resolveImageIndex() {
-        if (this.percentage >= 100) { return 5; }
+        if (this.percentage >= 99) { return 5; }
         else if (this.percentage > 75) { return 4; }
         else if (this.percentage > 50) { return 3; }
         else if (this.percentage > 25) { return 2; }

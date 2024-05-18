@@ -1,6 +1,6 @@
 class BottleBar extends Bars {
 
-    x = 180;
+    x = 170;
     percentage = 0;
 
     STATUS_BOTTLES = [

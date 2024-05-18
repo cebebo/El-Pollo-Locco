@@ -1,7 +1,7 @@
 class EndbossBar extends Bars {
 
-    x = 500;
-    y = 420;
+    x = 230;
+    y = 430;
     width = 200;
     height = 55;
     percentage = 100;

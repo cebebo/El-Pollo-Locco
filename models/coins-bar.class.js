@@ -1,6 +1,6 @@
 class CoinsBar extends Bars {
 
-    x = 350;
+    x = 330;
     percentage = 0;
 
     STATUS_COINS = [

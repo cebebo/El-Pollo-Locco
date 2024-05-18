@@ -1,5 +1,5 @@
 class BeansBar extends Bars {
-x = 520;
+x = 490;
 percentage = 0;
 
 STATUS_BEANS = [

@@ -115,7 +115,7 @@ class Endboss extends MovableObject {
     }
 
     followCharacter() {
-        this.SOUND_START.play();
+        if (noises) this.SOUND_START.play();
         this.speed = 12;
         if (world.character.x + (world.character.width / 2) < this.x + (this.width / 2)) this.forward = true;
         else this.forward = false;
@@ -128,7 +128,7 @@ class Endboss extends MovableObject {
     }
 
     attackCharacter() {
-        this.SOUND_ATTACK.play();
+        if (noises) this.SOUND_ATTACK.play();
         this.speed = 17;
         if (world.character.x + (world.character.width / 2) < this.x + (this.width / 2)) this.forward = true;
         else this.forward = false;
@@ -146,14 +146,14 @@ class Endboss extends MovableObject {
 
     hurt() {
         this.playAnimation(this.IMAGES_HURT);
-        this.SOUND_HURT.play();
+        if (noises) this.SOUND_HURT.play();
     }
 
     dead() {
         this.freeze = false;
         this.playAnimation(this.IMAGES_DEAD);
         this.y += 30;
-        if (this.deadEndboss) this.SOUND_DEAD.play();
+        if (noises) if (this.deadEndboss) this.SOUND_DEAD.play();
         this.deadEndboss=false;
         setTimeout(() => { 
             this.SOUND_DEAD.pause() 

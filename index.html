@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="models/drawable-objects.class.js"></script>
     <script src="models/movable-object.class.js"></script>
+    <script src="models/poster.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/bars.class.js"></script>
     <script src="models/chicken.class.js"></script>
@@ -29,6 +30,7 @@
     <script src="models/coins-bar.class.js"></script>
     <script src="models/beans-bar.class.js"></script>
     <script src="models/endboss-bar.class.js"></script>
+    <script src="models/controller.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
@@ -40,15 +42,39 @@
 </head>
 
 <body onload="init()">
-    <img class="title" src="./img/title.png">
-    <img class="flag" src="./img/flag2.png">
-    
+    <img id="title" class="title" src="./img/title.png">
+    <div class="infoContainer">Dieses Spiel ist nur in horizontaler Ausrichtung spielbar. Bitte das Display um 90 Grad drehen!<br><br>
+        This game is only playable in horizontal orientation. Please rotate the display 90 degrees!
+        <br><br><iframe src="https://giphy.com/embed/JOtdkVKp0q8tJ0DGyJ" width="200" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/stickers/mobile-black-rotatescreen-JOtdkVKp0q8tJ0DGyJ">via GIPHY</a></p>
+    </div>
     <div id="screen">
-        <canvas id="canvas" width="720" height="480"></canvas>
+        <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
+        <img id="startImage" class="poster" src="img/9_intro_outro_screens/start/start.png">
+        <img id="settingsImage" class="poster d-none" src="img/9_intro_outro_screens/settings.png">
+        <img id="levelCompleteImage" class="poster d-none" src="img/9_intro_outro_screens/game_over/levelComplete.png">
+        <img id="gameOverImage" class="poster d-none" src="img/9_intro_outro_screens/game_over/gameOver.png">
     </div>
-    <div class="iconsBar">
-        <img class="icons" src="./img/fullscreen.png" onclick="fullscreen()">
+    <div id="iconsBar" class="iconsBar">
+        <img class="icons d-none" id="fullscreenIcon" src="./img/fullscreen.png" onclick="fullscreen()">
+        <img class="icons d-none" id="settingsIcon" src="./img/settings.png" onclick="openSettings()">
     </div>
+    <div class="startButton"><img id="startButton" src="./img/btn-startGame.png" onclick="startGame()"></div>
+    <div id="controllerBar" class="controllerBar d-none">
+        <div class="leftSide">
+            <img class="controllerButtons" src="./img/0_buttons/moveLeft.png" id="moveLeft">
+            <img class="controllerButtons" src="./img/0_buttons/moveRight.png" id="moveRight">
+        </div>
+        <div class="rightSide">
+            <img class="controllerButtons" src="./img/0_buttons/bottle.png" id="bottle">
+            <img class="controllerButtons pushUp" src="./img/0_buttons/jump.png" id="jump">
+            <img class="controllerButtons" src="./img/0_buttons/fart.png" id="fart">
+        </div>
+    </div>
+    <div class="soundBar d-none" id="soundBar">
+        <img class="soundIcons" id="settingsMusic" src="img/on.png" onclick="MuteAudio('settingsMusic')">
+        <img class="soundIcons" id="settingsNoises" src="img/on.png" onclick="MuteAudio('settingsNoises')">
+    </div>
+    <img id="restartButton" class="restart gameOver d-none" src="img/btn-restart.png" onclick="restartGame()">
 </body>
 
 </html>
