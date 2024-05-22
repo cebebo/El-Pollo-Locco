@@ -1,15 +1,15 @@
-class World {
+class World extends Draw {
 
     character = new Character();
-    enemies = level1.enemies;
-    cacti = level1.cacti;
-    clouds = level1.clouds;
-    backgroundObjects = level1.backgroundObjects;
-    coins = level1.coins;
-    bottles = level1.bottles;
-    beans = level1.beans;
-    checkpoints = level1.checkpoints;
-    level = level1;
+    enemies = currentLevel.enemies;
+    cacti = currentLevel.cacti;
+    clouds = currentLevel.clouds;
+    backgroundObjects = currentLevel.backgroundObjects;
+    coins = currentLevel.coins;
+    bottles = currentLevel.bottles;
+    beans = currentLevel.beans;
+    checkpoints = currentLevel.checkpoints;
+    level = currentLevel;
     powerLine = new PowerLine();
     canvas;
     ctx;
@@ -42,6 +42,7 @@ class World {
     endbossBarActive = false;
 
     constructor(canvas, keyboard) {
+        super();
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -62,6 +63,7 @@ class World {
             this.checkFarting();
             this.correctPosition();
             this.corpseEraser();
+            backgroundMusic();
             if (!this.stopCamera()) this.endbossBarActive = true;
         }, 50);
     }
@@ -84,49 +86,65 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.SPACE && this.bottlesBar.percentage > 0 && this.bottleKiller) {
-            this.active = true;
-            this.power++;
-            if (this.power >= 20) { this.power = 20 };
-            if (noises) this.SOUND_LOADPOWER.play();
-            this.powerLine.width = (this.power * 6);
+            this.loadPowerLineForThrowing();
         }
         if (this.keyboard.SPACE == false && this.active == true) {
-            this.bottleKiller = false;
-            let bottle = new ThrowableObject(this.character.x + 70, this.character.y + 150);
-            this.throwableObjects.push(bottle);
-            this.power = 0;
-            this.powerLine.width = 0;
-            this.active = false;
-            this.bottlesBar.percentage -= 20;
-            this.bottlesBar.setPercentage(this.bottlesBar.percentage, this.bottlesBar.STATUS_BOTTLES);
-            if (noises) this.character.SOUND_SHOT.play();
+            this.throwBottleAfterLoading();
         }
+    }
+
+    loadPowerLineForThrowing() {
+        this.active = true;
+        this.power++;
+        if (this.power >= 20) { this.power = 20 };
+        if (noises) this.SOUND_LOADPOWER.play();
+        this.powerLine.width = (this.power * 6);
+    }
+
+    throwBottleAfterLoading() {
+        this.bottleKiller = false;
+        let bottle = new ThrowableObject(this.character.x + 70, this.character.y + 150);
+        this.throwableObjects.push(bottle);
+        this.power = 0;
+        this.powerLine.width = 0;
+        this.active = false;
+        this.bottlesBar.percentage -= 20;
+        this.bottlesBar.setPercentage(this.bottlesBar.percentage, this.bottlesBar.STATUS_BOTTLES);
+        if (noises) this.character.SOUND_SHOT.play();
     }
 
     checkFarting() {
         if (this.keyboard.DOWN && this.beansBar.percentage > 0) {
-            this.activeFart = true;
-            this.fartStrength++;
-            if (this.fartStrength >= 20) this.fartStrength = 20;
-            if (noises) this.SOUND_LOADPOWER.play();
-            this.powerLine.width = (this.fartStrength * 6);
+            this.loadPowerLineForFarting();
         }
         if (!this.keyboard.DOWN && this.activeFart == true) {
-            if (noises) this.SOUND_FART.play();
-            let currentFart = new FartableObject(this.character.x + this.checkFartDirection(), this.character.y + 190);
-            this.runningFart.push(currentFart);
-            let fartIntervall = setInterval(() => {
-                if (this.runningFart[0].width >= (this.fartStrength * 4)) {
-                    clearInterval(fartIntervall);
-                    this.runningFart.splice(0, 1);
-                }
-            }, 1000)
-            this.beansBar.percentage -= 20;
-            this.powerLine.width = 0;
-            this.beansBar.setPercentage(this.beansBar.percentage, this.beansBar.STATUS_BEANS);
-            this.activeFart = false;
-            this.fartStrength = 0;
+            this.fartAfterLoading();
         }
+    }
+
+    loadPowerLineForFarting() {
+        this.activeFart = true;
+        this.fartStrength++;
+        if (this.fartStrength >= 20) this.fartStrength = 20;
+        if (noises) this.SOUND_LOADPOWER.play();
+        this.powerLine.width = (this.fartStrength * 6);
+    }
+
+    fartAfterLoading() {
+        if (noises) this.SOUND_FART.play();
+        let currentFart = new FartableObject(this.character.x + this.checkFartDirection(), this.character.y + 190);
+        this.runningFart.push(currentFart);
+        let fartIntervall = setInterval(() => {
+            if (this.runningFart[0].width >= (this.fartStrength * 4)) {
+                clearInterval(fartIntervall);
+                this.runningFart.splice(0, 1);
+            }
+        }, 1000)
+        this.beansBar.percentage -= 20;
+        this.powerLine.width = 0;
+        this.beansBar.setPercentage(this.beansBar.percentage, this.beansBar.STATUS_BEANS);
+        this.activeFart = false;
+        this.fartStrength = 0;
     }
 
     checkFartDirection() {
@@ -150,13 +168,13 @@ class World {
                     flyingBottle.y = enemy.y;
                     flyingBottle.broken = true;
                     this.enemyKiller = false;
-                    this.checkEnemyType(enemy);
+                    this.checkEnemyType(enemy, flyingBottle);
                 };
             });
         });
     }
 
-    checkEnemyType(enemy) {
+    checkEnemyType(enemy, flyingBottle) {
         if (enemy instanceof Chick || enemy instanceof Chicken) {
             this.deadEnemy(enemy);
             setTimeout(() => {
@@ -185,7 +203,7 @@ class World {
     }
 
     collisionsWithCacti() {
-        this.character.speed = 3;
+        this.character.speed = levelValues[level - 1].speedCharacter;
         this.level.cacti.forEach((cactus) => {
             if (this.character.isColliding(cactus)) {
                 this.character.speed = 1;
@@ -218,7 +236,7 @@ class World {
                 gameCheckpoint++;
                 checkpoint.height = 10;
                 this.spawnObjectsInNextArea(checkpoint);
-                setTimeout(() => { this.activeCheckpoint = true }, 5000);
+                setTimeout(() => { this.activeCheckpoint = true }, 2000);
             }
         })
     }
@@ -265,24 +283,28 @@ class World {
             this.statusBar.setPercentage(this.character.energy, this.statusBar.STATUS_ENERGY);
         }
         else {
-            if (!this.character.jumpAttack(enemy) && !this.character.isHurt() && this.enemyKiller) {
-                this.character.jump();
-                if (noises) this.SOUND_JUMPATTACK.play();
-                if (enemy instanceof Chick || enemy instanceof Chicken) {
-                    this.enemyKiller = false;
-                    this.deadEnemy(enemy);
-                }
-                if (enemy instanceof Endboss && enemy.freeze) {
-                    this.enemyKiller = false;
-                    enemy.hit();
-                    this.endbossBar.setPercentage(enemy.energy, this.endbossBar.STATUS_ENERGY_ENDBOSS);
-                    this.character.jump();
-                    this.checkIfEndbossIsKilled(enemy);
-                    enemy.freeze = false;
-                    setTimeout(() => { this.enemyKiller = true }, 150);
-                }
-            }
+            if (!this.character.jumpAttack(enemy) && !this.character.isHurt() && this.enemyKiller) this.killChickAndChicken(enemy);
+            if (enemy instanceof Endboss && enemy.freeze && this.enemyKiller) this.killEndboss(enemy);
         }
+    }
+
+    killChickAndChicken(enemy) {
+        this.character.jump();
+        if (noises) this.SOUND_JUMPATTACK.play();
+        if (enemy instanceof Chick || enemy instanceof Chicken) {
+            this.enemyKiller = false;
+            this.deadEnemy(enemy);
+        }
+    }
+
+    killEndboss(enemy) {
+        this.enemyKiller = false;
+        enemy.hit();
+        this.endbossBar.setPercentage(enemy.energy, this.endbossBar.STATUS_ENERGY_ENDBOSS);
+        this.character.jump();
+        this.checkIfEndbossIsKilled(enemy);
+        enemy.freeze = false;
+        setTimeout(() => { this.enemyKiller = true }, 1000);
     }
 
     deadEnemy(enemy) {
@@ -340,90 +362,4 @@ class World {
         this.beansBar.setPercentage(this.beansBar.percentage, this.beansBar.STATUS_BEANS);
     }
 
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        if (this.stopCamera()) this.ctx.translate(this.camera_x, 0);
-        else this.ctx.translate(-(this.lastCheckpoint.x + 1850), 0);
-        this.drawMovableScreenContent();
-        if (this.stopCamera()) this.ctx.translate(-this.camera_x, 0);
-        else this.ctx.translate(this.lastCheckpoint.x + 1850, 0);
-        this.drawFixedScreenContent();
-        this.drawWhenPressedButton();
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
-    }
-
-    stopCamera() {
-        return this.character.x < this.lastCheckpoint.x + 1950;
-    }
-
-    drawMovableScreenContent() {
-        this.drawEnvironment();
-        this.drawCollectables();
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.throwableObjects);
-        this.drawEnemies();
-        this.addObjectsToMap(this.runningFart);
-        this.addObjectsToMap(this.checkpoints);
-    }
-
-    drawFixedScreenContent() {
-        this.drawBars();
-        this.addObjectsToMap(touchController);
-    }
-
-    drawWhenPressedButton() {
-        if (this.keyboard.SPACE || this.keyboard.DOWN) this.addToMap(this.powerLine);
-    }
-
-    drawCollectables() {
-        this.addObjectsToMap(this.level.coins);
-        this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.beans);
-    }
-
-    drawBars() {
-        this.addToMap(this.statusBar);
-        this.addToMap(this.bottlesBar);
-        this.addToMap(this.coinsBar);
-        this.addToMap(this.beansBar);
-        if (this.endbossBarActive) this.addToMap(this.endbossBar);
-    }
-
-    drawEnemies() {
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.level.cacti);
-    }
-
-    drawEnvironment() {
-        this.addObjectsToMap(this.level.backgroundObjects);
-        this.addObjectsToMap(this.level.clouds);
-    }
-
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
-    }
-
-    addToMap(mo) {
-        if (mo.otherDirection) { this.flipImage(mo); }
-        mo.draw(this.ctx);
-        // mo.drawFrame(this.ctx);
-        if (mo.otherDirection) { this.flipImageBack(mo); }
-    }
-
-    flipImage(mo) {
-        this.ctx.save();
-        this.ctx.translate(mo.width, 0);
-        this.ctx.scale(-1, 1);
-        mo.x = mo.x * -1;
-    }
-
-    flipImageBack(mo) {
-        mo.x = mo.x * -1;
-        this.ctx.restore();
-    }
 }

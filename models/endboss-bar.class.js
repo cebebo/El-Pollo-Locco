@@ -21,5 +21,4 @@ class EndbossBar extends Bars {
         this.setPercentage(100, this.STATUS_ENERGY_ENDBOSS);
     }
 
-
 }

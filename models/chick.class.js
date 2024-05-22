@@ -1,14 +1,16 @@
 class Chick extends MovableObject {
 
     y = 365;
-    height = 60;
-    width = 45;
+    height = 70;
+    width = 50;
     idealFrame = [7, 7, 14, 14];
     xCol = this.x + this.idealFrame[0];
     yCol = this.y + this.idealFrame[1];
     wCol = this.width - this.idealFrame[2];
     hCol = this.height - this.idealFrame[3];
     dead = false;
+    counter;
+    turnAroundTime;
 
 
     IMAGES_WALKING = [
@@ -21,31 +23,34 @@ class Chick extends MovableObject {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.x = x + 700 + Math.random() * 700;
-        this.speed = 0.15 + Math.random() * 0.25;
+        this.speed = levelValues[level - 1].speedChick;
         this.animate();
     }
 
     animate() {
-        let turnAroundTime = this.setTimeToTurnAround();
-        let counter = 0;
+        this.turnAroundTime = this.setTimeToTurnAround();
+        this.counter = 0;
         setInterval(() => {
-            counter++;
-            if (counter > turnAroundTime * 60) {
-                counter = 0;
-                turnAroundTime = this.setTimeToTurnAround();
-                this.speed = 0.15 + Math.random() * 1;
-            }
-            if (turnAroundTime <= 8) {
-                this.moveLeft();
-                this.otherDirection = false;
-            }
-            if (turnAroundTime > 8) {
-                this.moveRight();
-                this.otherDirection = true;
-            }
+            this.counter++;
+            this.checkTurnAroundTime();
         }, 1000 / 60)
-
         this.chickWalk();
+    }
+
+    checkTurnAroundTime() {
+        if (this.counter > this.turnAroundTime * 60) {
+            this.counter = 0;
+            this.turnAroundTime = this.setTimeToTurnAround();
+            this.speed = 0.15 + Math.random() * levelValues[level-1].chickSpeed;
+        }
+        if (this.turnAroundTime <= 8) {
+            this.moveLeft();
+            this.otherDirection = false;
+        }
+        if (this.turnAroundTime > 8) {
+            this.moveRight();
+            this.otherDirection = true;
+        }
     }
 
     chickWalk() {

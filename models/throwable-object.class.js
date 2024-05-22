@@ -17,7 +17,7 @@ class ThrowableObject extends MovableObject {
     ];
 
     broken = false;
-    SOUND_BREAKING_GLASS = new Audio ('audio/breakingGlass.wav');
+    SOUND_BREAKING_GLASS = new Audio('audio/breakingGlass.wav');
 
     constructor(x, y) {
         super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
@@ -35,22 +35,26 @@ class ThrowableObject extends MovableObject {
 
     throw() {
         let power = world.power;
+        if (direction == 'right') this.throwToTheRight(power);
+        else this.throwToTheLeft(power);
+    }
 
-        if (direction == 'right') {
-            this.speedY = power * 1.8;
-            this.applyGravity();
-            setInterval(() => {
-                this.x += power * 0.35;
-                if (this.y == 280) power = 0;
-            }, 25)
-        } else {
-            this.speedY = power * 1.8;
-            this.applyGravity();
-            setInterval(() => {
-                this.x -= power * 0.35;
-                if (this.y == 280) power = 0;
-            }, 25)
-        }
+    throwToTheRight(power) {
+        this.speedY = power * 1.8;
+        this.applyGravity();
+        setInterval(() => {
+            this.x += power * 0.35;
+            if (this.y == 280) power = 0;
+        }, 25)
+    }
+
+    throwToTheLeft(power) {
+        this.speedY = power * 1.8;
+        this.applyGravity();
+        setInterval(() => {
+            this.x -= power * 0.35;
+            if (this.y == 280) power = 0;
+        }, 25)
     }
 
     animate() {

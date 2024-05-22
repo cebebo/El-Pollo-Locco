@@ -19,10 +19,4 @@ class BottleBar extends Bars {
         
     }  
 
-    // setPercentage(percentage) {
-    //     this.percentage = percentage;
-    //     let path = this.STATUS_ENERGY[this.resolveImageIndex()];
-    //     this.img = this.imageCache[path];
-    // }
-
 }

@@ -41,7 +41,7 @@ class Cactus extends MovableObject {
 
     letItGrow(fixedHeight, fixedWidth) {
         let growing = setInterval(() => {
-            if (!this.dead) {
+            if (!this.dead && !settings) {
                 this.height += fixedHeight / 10;
                 this.width += fixedWidth / 10;
                 this.y -= fixedHeight / 10;
@@ -52,7 +52,7 @@ class Cactus extends MovableObject {
                     clearInterval(growing);
                 }
             }
-        }, 2000);
+        }, levelValues[level-1].cactusGrow);
     }
 
     killedCactus() {

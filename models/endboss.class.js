@@ -3,12 +3,13 @@ class Endboss extends MovableObject {
     height = 375;
     width = 255;
     idealFrame = [20, 66, 28, 80];
-    speed = 2;
+    speed = levelValues[level-1].speedEndboss;
     energy = 100;
     xCol = this.x + this.idealFrame[0];
     yCol = this.y + this.idealFrame[1];
     wCol = this.width - this.idealFrame[2];
     hCol = this.height - this.idealFrame[3];
+    endbossKilled = false;
 
     animationEndbossStart = world.stopCamera();
     forward = true;
@@ -20,6 +21,7 @@ class Endboss extends MovableObject {
     SOUND_HURT = new Audio('audio/endbossHurt.wav');
     SOUND_FREEZE = new Audio('audio/endbossFreeze.wav');
     SOUND_ATTACK = new Audio('audio/endbossAttack.wav');
+  
     
 
     IMAGES_WALKING = [
@@ -108,40 +110,46 @@ class Endboss extends MovableObject {
             this.otherDirection = true;
         }
         this.speed = 2;
+        song = 1
     }
 
     alertMode() {
-        return (world.character.x + 300) > this.x && (world.character.x + world.character.width - 300) < this.x + this.width;
+        return (world.character.x + levelValues[level-1].distanceFollow) > this.x && (world.character.x + world.character.width - levelValues[level-1].distanceFollow) < this.x + this.width;
     }
 
     followCharacter() {
         if (noises) this.SOUND_START.play();
-        this.speed = 12;
+        this.speed = levelValues[level-1].endbossFollow;
         if (world.character.x + (world.character.width / 2) < this.x + (this.width / 2)) this.forward = true;
         else this.forward = false;
         this.walkDirection();
         this.playAnimation(this.IMAGES_ALERTNESS);
+        song = 2;
+        if (world.character.isDead()) music = false;
     }
 
     attackMode() {
-        return (world.character.x + 150) > this.x && (world.character.x + world.character.width - 150) < this.x + this.width;
+        return (world.character.x + levelValues[level-1].distanceAttack) > this.x && (world.character.x + world.character.width - levelValues[level-1].distanceAttack) < this.x + this.width;
     }
 
     attackCharacter() {
-        if (noises) this.SOUND_ATTACK.play();
-        this.speed = 17;
+        if (noises) if (!world.character.isDead()) this.SOUND_ATTACK.play();
+        this.speed = levelValues[level-1].endbossAttack;
         if (world.character.x + (world.character.width / 2) < this.x + (this.width / 2)) this.forward = true;
         else this.forward = false;
         this.walkDirection();
         this.playAnimation(this.IMAGES_ATTACK);
+        song = 2;
+        if (world.character.isDead()) music = false;
     }
 
     freezed() {
         if (this.freeze) {
             this.loadImage(this.IMAGES_FREEZE);
             this.speed = 0;
-            setTimeout(() => { this.freeze = false }, 5000);
+            setTimeout(() => { this.freeze = false }, levelValues[level-1].endbossFreezed);
         }
+        song = 2;
     }
 
     hurt() {
@@ -155,9 +163,13 @@ class Endboss extends MovableObject {
         this.y += 30;
         if (noises) if (this.deadEndboss) this.SOUND_DEAD.play();
         this.deadEndboss=false;
+        music = false;
         setTimeout(() => { 
             this.SOUND_DEAD.pause() 
-            world.character.win += 1;
+            if (!this.endbossKilled) {
+                world.character.win += 1;
+                this.endbossKilled = true;
+            }
         }, 1000);
     }
 }

@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>El Pollo Loco</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="models/drawable-objects.class.js"></script>
     <script src="models/movable-object.class.js"></script>
-    <script src="models/poster.class.js"></script>
+    <script src="models/draw.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/bars.class.js"></script>
     <script src="models/chicken.class.js"></script>
@@ -30,23 +30,29 @@
     <script src="models/coins-bar.class.js"></script>
     <script src="models/beans-bar.class.js"></script>
     <script src="models/endboss-bar.class.js"></script>
-    <script src="models/controller.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
     <script src="models/endboss.class.js"></script>
-
-
-    <script src="levels/level1.js"></script>
+    <script src="levels/levels.js"></script>
+    <script src="levels/currentLevel.js"></script>
     <script src="js/game.js"></script>
 </head>
 
 <body onload="init()">
     <img id="title" class="title" src="./img/title.png">
-    <div class="infoContainer">Dieses Spiel ist nur in horizontaler Ausrichtung spielbar. Bitte das Display um 90 Grad drehen!<br><br>
+    <div class="infoContainer">Dieses Spiel ist nur in horizontaler Ausrichtung spielbar. Bitte das Display um 90 Grad
+        drehen!<br><br>
         This game is only playable in horizontal orientation. Please rotate the display 90 degrees!
-        <br><br><iframe src="https://giphy.com/embed/JOtdkVKp0q8tJ0DGyJ" width="200" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/stickers/mobile-black-rotatescreen-JOtdkVKp0q8tJ0DGyJ">via GIPHY</a></p>
+        <br><br><iframe src="https://giphy.com/embed/JOtdkVKp0q8tJ0DGyJ" width="200" height="200" frameBorder="0"
+            class="giphy-embed" allowFullScreen></iframe>
+        <p><a href="https://giphy.com/stickers/mobile-black-rotatescreen-JOtdkVKp0q8tJ0DGyJ">via GIPHY</a></p>
     </div>
+    <header>
+        <img src="img/btn-introduction.png" onclick="openPopUp('introduction')">
+        <img src="img/btn-pivacyPolicy.png" onclick="openPopUp('privacyPolicy')">
+        <img src="img/btn-legalNotice.png" onclick="openPopUp('legalNotice')">
+    </header>
     <div id="screen">
         <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
         <img id="startImage" class="poster" src="img/9_intro_outro_screens/start/start.png">
@@ -74,7 +80,117 @@
         <img class="soundIcons" id="settingsMusic" src="img/on.png" onclick="MuteAudio('settingsMusic')">
         <img class="soundIcons" id="settingsNoises" src="img/on.png" onclick="MuteAudio('settingsNoises')">
     </div>
-    <img id="restartButton" class="restart gameOver d-none" src="img/btn-restart.png" onclick="restartGame()">
+    <img id="restartButton" class="restart d-none" src="img/btn-restart.png" onclick="restartGame()">
+    <img id="nextLevelButton" class="nextLevel d-none" src="img/btn-nextLevel.png" onclick="nextLevel()">
+    <div id="counts" class="d-none">
+        <h1 id="countResultCoins" class="counterValue">-?-</h1>
+        <h1 id="countResultLife" class="counterValue">-?-</h1>
+        <h1 id="countResult" class="counterValue">-?-</h1>
+    </div>
+    <div id="popUp" class="popUp d-none" onclick="closePopUp()" style="cursor: pointer;">
+        <div id="introduction" class="d-none">
+            <img class="introduction" src="img/introduction.png">
+        </div>
+        <div id="legalNotice" class="d-none">
+            <div class="ppContainer">
+                <h1>Impressum</h1>
+                <p>Angaben gem&auml;&szlig; § 5 TMG:</p>
+                <p>Christian Becker<br>
+                    Odinstr. 7<br>
+                    56348 Bornich<br><br></p>
+                <p>Telefon: +49 151 25 35 57 55<br>
+                    Email: cebebo@gmx.net</p>
+                <h2>Kontakt:</h2>
+
+                <h2>Verantwortlich f&uuml;r den Inhalt nach § 55 Abs. 2 RStV:</h2>
+                <p>[Verantwortlich für den Inhalt]</p>
+                <h2>Quellenangaben f&uuml;r die verwendeten Bilder und Grafiken:</h2>
+                <p>
+                    https://developerakademie.com<br>
+                    https://www.cleanpng.com/
+                </p>
+                <p><i>Quelle: <a href="http://www.anwaltinfos.de/">www.anwaltinfos.de</a></i></p>
+            </div>
+        </div>
+        <div id="privacyPolicy" class="d-none">
+            <div class="ppContainer">
+                <h3>Haftung für Inhalte</h3>
+                <p>Die auf den Web-Seiten abrufbaren Beiträge dienen nur der allgemeinen Information und nicht der
+                    Beratung
+                    in konkreten Fällen.
+                    Wir sind bemüht, für die Richtigkeit und Aktualität aller auf der Website enthaltenen Informationen
+                    und
+                    Daten gemäß § 7 Abs.1 TMG zu sorgen.
+                    Für die Korrektheit, die Vollständigkeit, die Aktualität oder Qualität der bereitgestellten
+                    Informationen und Daten wird jedoch keine Gewähr
+                    nach § 8 bis 10 TMG übernommen. Die Haftung für den Inhalt der abrufbaren Informationen wird
+                    ausgeschlossen, soweit es sich nicht um
+                    vorsätzliche oder grob fahrlässige Falschinformation handelt.
+                    Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen
+                    Gesetzen
+                    bleiben hiervon unberührt.
+                    Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten
+                    Rechtsverletzung möglich.
+                    Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.
+                </p>
+                <h3>Haftung für Links</h3>
+                <p>Wir sind für den Inhalt von Webseiten, die über einen Hyperlink erreicht werden, nicht
+                    verantwortlich.
+                    Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
+                    Wir machen uns die Inhalte dieser Internetseiten ausdrücklich nicht zu eigen und können deshalb für
+                    die
+                    inhaltliche Korrektheit,
+                    Vollständigkeit und Verfügbarkeit keine Gewähr leisten. Wir haben bei der erstmaligen Verknüpfung
+                    zwar
+                    den fremden Inhalt daraufhin überprüft,
+                    ob durch ihn eine mögliche zivilrechtliche oder strafrechtliche Verantwortlichkeit ausgelöst wird.
+                    Wir
+                    sind aber nicht dazu verpflichtet, die Inhalte,
+                    auf die wir unserem Angebot verweisen, ständig auf Veränderungen zu überprüfen, die eine
+                    Verantwortlichkeit neu begründen könnten.
+                    Erst wenn wir feststellen oder von anderen darauf hingewiesen werden, dass ein konkretes Angebot, zu
+                    dem
+                    wir einen Link bereitgestellt haben,
+                    eine zivil- oder strafrechtliche Verantwortlichkeit auslöst, werden wir den Verweis auf dieses
+                    Angebot
+                    aufheben, soweit uns dies technisch möglich und zumutbar ist.</p>
+                <h3>Urheberrecht</h3>
+                <p>Die durch den Betreiber dieser Seite erstellten Inhalte und Werke auf diesen Webseiten unterliegen
+                    dem
+                    deutschen Urheberrecht.
+                    Sämtliche Beiträge Dritter sind als solche gekennzeichnet. Die Vervielfältigung, Bearbeitung,
+                    Verbreitung und jede Art der Verwertung außerhalb der
+                    Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw.
+                    Erstellers.
+                    Kopien von diesen Seiten sind nur für den privaten
+                    Bereich gestattet, nicht jedoch für kommerzielle Zwecke.</p>
+                <h3>Datenschutz</h3>
+                <p>Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf
+                    unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder E-Mail-Adressen) erhoben
+                    werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre
+                    ausdrückliche Zustimmung nicht an Dritte weitergegeben. </p>
+                <p>In Verbindung mit Ihrem Zugriff werden in unserem Server für Zwecke der Datensicherheit vorübergehend
+                    Daten gespeichert, die möglicherweise eine Identifizierung zulassen (zum Beispiel IP-Adresse, Datum,
+                    Uhrzeit und Name der angeforderten Datei). Eine Auswertung, mit Ausnahme für statistische Zwecke in
+                    anonymisierter Form, erfolgt nicht.</p>
+                <p>Sollten Sie bei uns Informationsmaterialien bestellen, benötigen wir von Ihnen Name, E-Mail-Adresse
+                    sowie
+                    Angaben zur Lieferung und Rechnungsstellung. So können wir Ihre Bestellung bearbeiten und ausführen.
+                    Diese Daten werden für die Dauer der Auftragsabwicklung in elektronischer Form gespeichert. Eine
+                    weitergehende Nutzung personenbezogener Daten oder eine Weitergabe an Dritte erfolgt ohne Ihre
+                    ausdrückliche Einwilligung nicht.</p>
+                <p>Mit der Bestellung willigen Sie in die genannte Verarbeitung Ihrer personenbezogenen Daten ein,
+                    soweit
+                    dies für den Zweck des Vertrages erforderlich ist. Sie können diese Einwilligung schriftlich oder
+                    per
+                    E-Mail uns gegenüber jederzeit mit Wirkung für die Zukunft widerrufen.</p>Quelle: <a
+                    href="http://www.disclaimervorlage.de/disclaimer-deutsch.html">Disclaimer auf Deutsch</a>, <a
+                    href="https://www.haendlerschutz.com/news/e-commerce/handel">Handel</a>, <a
+                    href="https://www.haendlerschutz.com/haendlerbund.html">Händlerbund</a>
+            </div>
+        </div>
+    </div>
+    
 </body>
 
 </html>

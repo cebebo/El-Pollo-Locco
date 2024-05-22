@@ -4,10 +4,8 @@ class MovableObject extends DrawableObject {
     speedY = 0;
     acceleration = 2;
     otherDirection = false;
-    energy; 
+    energy;
     lastHit = 0;
-   
-
 
     applyGravity() {
         setInterval(() => {
@@ -32,7 +30,7 @@ class MovableObject extends DrawableObject {
 
     autoMoveLeft() {
         setInterval(() => {
-            this.moveLeft();
+            if (!settings) this.moveLeft();
         }, 1000 / 60);
     }
 
@@ -41,11 +39,11 @@ class MovableObject extends DrawableObject {
     }
 
     moveRight() {
-        this.x += this.speed;
+        if (!settings) this.x += this.speed;
     }
 
     moveLeft() {
-        this.x -= this.speed;
+        if (!settings) this.x -= this.speed;
     }
 
     playAnimation(images) {
@@ -65,9 +63,9 @@ class MovableObject extends DrawableObject {
     }
 
     playAnimationNoLoop(images) {
-            let path = images[frameCounter];
-            this.img = this.imageCache[path];
-            if (frameCounter < images.length-1) frameCounter++;
+        let path = images[frameCounter];
+        this.img = this.imageCache[path];
+        if (frameCounter < images.length - 1) frameCounter++;
 
     }
 
@@ -83,8 +81,8 @@ class MovableObject extends DrawableObject {
     }
 
     hit() {
-        if (this instanceof Endboss) this.energy -= 20;
-        else this.energy -= 0.5;
+        if (this instanceof Endboss) this.energy -= levelValues[level - 1].endbossHit;
+        else this.energy -= levelValues[level - 1].characterHit;
         if (this.energy < 0) { this.energy = 0; }
         else {
             this.lastHit = new Date().getTime();
@@ -102,20 +100,26 @@ class MovableObject extends DrawableObject {
 
     rotateObject(maxWidth, speed) {
         setInterval(() => {
-            if (this.rotation) {
-                this.width -= speed;
-                this.x += speed / 2;
-            }
-            if (this.width == 0) {
-                this.rotation = false;
-                this.otherDirection = !this.otherDirection;
-            }
-            if (!this.rotation) {
-                this.width += speed;
-                this.x -= speed / 2;
-            }
+            if (this.rotation) this.rotationBecomingSmaller(speed);
+            if (this.width == 0) this.rotationChangesDirection();
+            if (!this.rotation) this.rotationBecomingLarger(speed);
             if (this.width == maxWidth) { this.rotation = true; }
         }, 30);
+    }
+
+    rotationChangesDirection() {
+        this.rotation = false;
+        this.otherDirection = !this.otherDirection;
+    }
+
+    rotationBecomingSmaller(speed) {
+        this.width -= speed;
+        this.x += speed / 2;
+    }
+
+    rotationBecomingLarger(speed) {
+        this.width += speed;
+        this.x -= speed / 2;
     }
 }
 

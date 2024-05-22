@@ -18,10 +18,4 @@ class StatusBar extends Bars {
         this.setPercentage(100, this.STATUS_ENERGY);
     }
 
-    // setPercentage(percentage) {
-    //     this.percentage = percentage;
-    //     let path = this.STATUS_ENERGY[this.resolveImageIndex()];
-    //     this.img = this.imageCache[path];
-    // }
-
 }
