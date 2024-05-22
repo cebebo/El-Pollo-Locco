@@ -287,10 +287,14 @@ header img:hover {
     body {
         background-image: none;
         background-color: black;
+        overflow: visible;
     }
 
     #startButton {
-        margin-top: 280px !important;
+        margin-top: 0 !important;
+        top: 250px;
+        position: fixed;
+        left: 230px;
     }
 
     #screen {
@@ -357,7 +361,11 @@ header img:hover {
         top: 222px;
     }
 
-    #counts
+    .iconsBar {
+        position: fixed;
+        margin-top: 0;
+        top: 0;
+    }
 
     #countResultCoins {
         position: fixed;
