@@ -16,12 +16,19 @@ let song;
 let noises = true;
 let level = 1;
 
-
+/**
+ * Initializes the start functions when the website is accessed.
+ * 
+ */
 function init() {
     canvas = document.getElementById('canvas');
     checkTouchControll();
 }
 
+/**
+ * Changes the variables when a specific key is pressed.
+ * 
+ */
 window.addEventListener("keydown", (e) => {
     if (e.keyCode === 38) { keyboard.UP = true; };
     if (e.keyCode === 40) { keyboard.DOWN = true; };
@@ -30,6 +37,10 @@ window.addEventListener("keydown", (e) => {
     if (e.keyCode === 32) { keyboard.SPACE = true; };
 });
 
+/**
+ * Changes the variables when a specific key is released.
+ * 
+ */
 window.addEventListener("keyup", (e) => {
     if (e.keyCode === 38) { keyboard.UP = false; };
     if (e.keyCode === 40) { keyboard.DOWN = false; };
@@ -38,11 +49,20 @@ window.addEventListener("keyup", (e) => {
     if (e.keyCode === 32) { keyboard.SPACE = false; };
 });
 
+/**
+ * Enters the fullscreen mode.
+ * 
+ */
 function fullscreen() {
     let fullscreen = document.getElementById('canvas');
     enterFullscreen(fullscreen);
 }
 
+/**
+ * Makes the request for fullscreen mode.
+ * 
+ * @param {variable} element - Variable of the object, that is requested for fullscreen mode.
+ */
 function enterFullscreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
@@ -53,6 +73,10 @@ function enterFullscreen(element) {
     }
 }
 
+/**
+ * Leaves the fullscreen mode.
+ * 
+ */
 function exitFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -61,6 +85,10 @@ function exitFullscreen() {
     }
 }
 
+/**
+ * Starts the game with all default settings.
+ * 
+ */
 function startGame() {
     prepareStartScreen();
     world = new World(canvas, keyboard);
@@ -76,6 +104,10 @@ function startGame() {
     }
 }
 
+/**
+ * Shows the canvas with the start of the game.
+ * 
+ */
 function prepareStartScreen() {
     document.getElementById('startImage').classList.add('d-none');
     document.getElementById('startButton').classList.add('d-none');
@@ -87,6 +119,10 @@ function prepareStartScreen() {
     document.getElementById('title').style.opacity = 1;
 }
 
+/**
+ * Checks which background music should be played and whether the mute function is activated.
+ * 
+ */
 function backgroundMusic() {
     if (!mute && music) {
         if (song == 1) {
@@ -103,11 +139,19 @@ function backgroundMusic() {
     }
 }
 
+/**
+ * Opens und closes the setting screen.
+ * 
+ */
 function openSettings() {
     if (!settings) showSettings();
     else hideSettings();
 }
 
+/**
+ * Shows all relevant objects in setting screen.
+ * 
+ */
 function showSettings() {
     document.getElementById('settingsImage').classList.remove('d-none');
     document.getElementById('canvas').classList.add('d-none');
@@ -118,6 +162,10 @@ function showSettings() {
     settings = !settings;
 }
 
+/**
+ * Hides all relevant objects in setting screen.
+ * 
+ */
 function hideSettings() {
     document.getElementById('settingsImage').classList.add('d-none');
     document.getElementById('canvas').classList.remove('d-none');
@@ -128,6 +176,11 @@ function hideSettings() {
     settings = !settings;
 }
 
+/**
+ * Mutes the background music and sounds when a switch is pressed.
+ * 
+ * @param {string} choice - Explains if music or noises has to be muted.
+ */
 function MuteAudio(choice) {
     if (choice == 'settingsMusic') {
         if (!mute) document.getElementById(choice).src = 'img/off.png';
@@ -141,6 +194,10 @@ function MuteAudio(choice) {
     }
 }
 
+/**
+ * Restarts the game by stopping all intervalls and getting the display ready for the game start.
+ * 
+ */
 function restartGame() {
     prepareScreenForRestart();
     if (settings) settings = false;
@@ -153,6 +210,10 @@ function restartGame() {
     world.character.gameIsOver = false;
 }
 
+/**
+ * Loads all graphics needed to start the game.
+ * 
+ */
 function prepareScreenForRestart() {
     document.getElementById('iconsBar').classList.remove('d-none');
     document.getElementById('restartButton').classList.remove('gameOver');
@@ -163,6 +224,10 @@ function prepareScreenForRestart() {
     document.getElementById('soundBar').classList.add('d-none');
 }
 
+/**
+ * Initiates the start of the next level in the game.
+ * 
+ */
 function nextLevel() {
     level++;
     world.character.win = 3;
@@ -173,6 +238,10 @@ function nextLevel() {
     restartGame();
 }
 
+/**
+ * At the beginning of the level, set all movement variables to false so that the character doesn't start running on his own.
+ * 
+ */
 function allButtonsUnpressed() {
     world.keyboard.LEFT = false;
     world.keyboard.RIGHT = false;
@@ -181,11 +250,20 @@ function allButtonsUnpressed() {
     world.keyboard.SPACE = false;
 }
 
+/**
+ * Check the level reached and load the corresponding values.
+ * 
+ * @returns - Numder of level.
+ */
 function checkLevel() {
     if (level == 1) { return settingsLevel1(); }
     if (level == 2) { return settingsLevel2(); }
 }
 
+/**
+ * Hides the final result display and sets all values to 0.
+ * 
+ */
 function hideCounterInDocument() {
     document.getElementById('counts').classList.add('d-none');
     world.character.resultLife = 0;
@@ -198,7 +276,10 @@ function hideCounterInDocument() {
     document.getElementById('countResult').innerHTML = '-?-';
 }
 
-
+/**
+ * Checks all touch events in canvas.
+ * 
+ */
 function checkTouchControll() {
     checkTouchLeft();
     checkTouchRight();
@@ -207,6 +288,10 @@ function checkTouchControll() {
     checkTouchSpace();
 }
 
+/**
+ * Checks all touch events on the 'move-left-button' and let the character move to the left.
+ * 
+ */
 function checkTouchLeft() {
     document.getElementById('moveLeft').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -220,6 +305,10 @@ function checkTouchLeft() {
     });
 }
 
+/**
+ * Checks all touch events on the 'move-right-button' and let the character move to the right.
+ * 
+ */
 function checkTouchRight() {
     document.getElementById('moveRight').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -233,6 +322,10 @@ function checkTouchRight() {
     });
 }
 
+/**
+ * Checks all touch events on the 'move-up-button' and let the character jump.
+ * 
+ */
 function checkTouchUp() {
     document.getElementById('jump').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -246,6 +339,10 @@ function checkTouchUp() {
     });
 }
 
+/**
+ * Checks all touch events on the 'move-down-button' and let the character fart.
+ * 
+ */
 function checkTouchDown() {
     document.getElementById('fart').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -259,6 +356,10 @@ function checkTouchDown() {
     });
 }
 
+/**
+ * Checks all touch events on the 'spacebar' and let the character throw a bottle.
+ * 
+ */
 function checkTouchSpace() {
     document.getElementById('bottle').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -272,11 +373,20 @@ function checkTouchSpace() {
     });
 }
 
+/**
+ * Opens the correct Popup when a spcific button is pressed.
+ * 
+ * @param {string} location - Shows what kind of screen should be displayed.
+ */
 function openPopUp(location) {
     document.getElementById('popUp').classList.remove('d-none');
     document.getElementById(location).classList.remove('d-none');
 }
 
+/**
+ * Closes the PopUp, that was opened before.
+ * 
+ */
 function closePopUp() {
     document.getElementById('popUp').classList.add('d-none');
     document.getElementById('introduction').classList.add('d-none');

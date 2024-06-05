@@ -24,6 +24,10 @@ class Chicken extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Plays the running animation as long as the chicken is alive. When it dies, it shows a dead chicken.
+     * 
+     */
     animate() {
         this.autoMoveLeft();
         setInterval(() => {

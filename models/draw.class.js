@@ -1,4 +1,9 @@
 class Draw extends MovableObject {
+
+    /**
+     * determined the order level of the objects to be painted.
+     * 
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.stopCamera()) this.ctx.translate(this.camera_x, 0);
@@ -14,10 +19,19 @@ class Draw extends MovableObject {
         });
     }
 
+    /**
+     * Stops the tracking camera when the character reaches the end of the level.
+     * 
+     * @returns - Variable when the character's position reaches 1950 pixels past the last checkpoint.
+     */
     stopCamera() {
         return this.character.x < this.lastCheckpoint.x + 1950;
     }
 
+    /**
+     * Draws all objects that move with the camera in the correct order.
+     * 
+     */
     drawMovableScreenContent() {
         this.drawEnvironment();
         this.drawText();
@@ -29,26 +43,46 @@ class Draw extends MovableObject {
         this.addObjectsToMap(this.checkpoints);
     }
 
+    /**
+     * Draws all objects that do not move with the camera, but are anchored to the screen, in the correct arrangement.
+     * 
+     */
     drawFixedScreenContent() {
         this.drawBars();
         this.addObjectsToMap(touchController);
     }
 
+    /**
+     * Sets the current level's lettering to the beginning of the level.
+     * 
+     */
     drawText() {
         this.ctx.font = "40px Berlin Sans FB";
         this.ctx.strokeText(`Level ${level}`, 40, 90);
     }
 
+    /**
+     * Displays the loading bar on the screen when the spacebar or down arrow key is pressed.
+     * 
+     */
     drawWhenPressedButton() {
         if (this.keyboard.SPACE || this.keyboard.DOWN) this.addToMap(this.powerLine);
     }
 
+    /**
+     * Draws all collectible objects on the screen.
+     * 
+     */
     drawCollectables() {
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.beans);
     }
 
+    /**
+     * Draws all bars on the screen.
+     * 
+     */
     drawBars() {
         this.addToMap(this.statusBar);
         this.addToMap(this.bottlesBar);
@@ -57,22 +91,40 @@ class Draw extends MovableObject {
         if (this.endbossBarActive) this.addToMap(this.endbossBar);
     }
 
+    /**
+     * Draws all enemies on the screen.
+     * 
+     */
     drawEnemies() {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.cacti);
     }
 
+    /**
+     * Draws all background environmental elements on the screen.
+     * 
+     */
     drawEnvironment() {
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.clouds);
     }
 
+    /**
+     * Takes each value from an array and draws it onto the screen.
+     * 
+     * @param {variable} objects - Array containing multiple graphics.
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });
     }
 
+    /**
+     * Draws the graphic of the specified variable on the screen and checks whether the graphic should be displayed original or mirrored.
+     * 
+     * @param {variable} mo - Contains the file path of the graphic.
+     */
     addToMap(mo) {
         if (mo.otherDirection) { this.flipImage(mo); }
         mo.draw(this.ctx);
@@ -80,6 +132,11 @@ class Draw extends MovableObject {
         if (mo.otherDirection) { this.flipImageBack(mo); }
     }
 
+    /**
+     * Mirrors the graphic.
+     * 
+     * @param {variable} mo - Displays the file path of the graphic to be mirrored.
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -87,6 +144,11 @@ class Draw extends MovableObject {
         mo.x = mo.x * -1;
     }
 
+    /**
+     * Mirrors the graphic back to original.
+     * 
+     * @param {variable} mo - Displays the file path of the graphic to be mirrored back to original.
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();

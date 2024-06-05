@@ -18,11 +18,21 @@ class DrawableObject {
          
     }
 
+    /**
+     * Loads the file path of the graphic into the img value.
+     * 
+     * @param {variable} path - file path of the graphic.
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
     
+    /**
+     * Loads the file paths of the graphic that are in the array into the img value and saves it in a new array.
+     * 
+     * @param {variable} array - file pathes of the graphic array.
+     */
     loadImages(array) {
         array.forEach((path) => {
             let img = new Image();
@@ -31,10 +41,20 @@ class DrawableObject {
         });
     }
 
+    /**
+     * Draws the graphic onto the canvas with details of size, position and file path.
+     * 
+     * @param {variable} ctx - variable of the canvas context.
+     */
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
+    /**
+     * Draws a box around objects to show their real sizes.
+     * 
+     * @param {variable} ctx - variable of the canvas context.
+     */
     drawFrame(ctx) {
         if (this instanceof Character || this instanceof Chicken || this instanceof Chick || this instanceof Endboss || this instanceof Coin || 
             this instanceof Bottle || this instanceof ThrowableObject || this instanceof FartableObject || this instanceof Cactus || this instanceof Bean) {

@@ -14,6 +14,10 @@ class FartableObject extends MovableObject {
         this.y = y;
     }
 
+    /**
+     * Checks the direction of the character to chose the right fart direction.
+     * 
+     */
     checkSide() {
         setInterval(() => {
             if (direction == 'right') this.fartToLeftSide();
@@ -21,12 +25,20 @@ class FartableObject extends MovableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Starts farting to the left.
+     * 
+     */
     fartToLeftSide() {
         this.otherDirection = false;
         this.width = (this.fartStrength * 4);
         
     }
 
+    /**
+     * Starts farting to the right.
+     * 
+     */
     fartToRightSide() {
         this.otherDirection = true;
         this.width = (this.fartStrength * 4);

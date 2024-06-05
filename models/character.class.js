@@ -122,6 +122,10 @@ class Character extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Checks whether the right, left and up arrow keys have been pressed and assigns corresponding functions to move the figure. If the buttons are not pressed for a long time, the figure's sleep mode is activated.
+     * 
+     */
     animate() {
         setInterval(() => {
             if (this.win == 4) this.winning();
@@ -139,6 +143,10 @@ class Character extends MovableObject {
         setInterval(() => { this.reactionsCharacter(); }, 100);
     }
 
+    /**
+     * calls the function to move the figure to the right when the character is standing on the ground and plays the corresponding sound files for running on sand.
+     * 
+     */
     MovingRight() {
         if (this.y >= 135 && !this.isHurt()) { if (noises) this.SOUND_WALKING.play(); }
         this.moveRight();
@@ -146,6 +154,10 @@ class Character extends MovableObject {
         direction = 'right';
     }
 
+    /**
+     * calls the function to move the figure to the left when the character is standing on the ground and plays the corresponding sound files for running on sand.
+     * 
+     */
     MovingLeft() {
         if (this.y >= 135 && !this.isHurt()) { if (noises) this.SOUND_WALKING.play(); }
         this.moveLeft();
@@ -153,6 +165,10 @@ class Character extends MovableObject {
         direction = 'left';
     }
 
+    /**
+     * Checks whether the character is not jumping and triggers the jump function with the corresponding jump sound.
+     * 
+     */
     MovingUp() {
         if (!this.activeJump) {
             this.playSoundJumping();
@@ -160,6 +176,10 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+     * Checks what state the character is in and starts corresponding animations. This function is responsible for playing the correct animations.
+     * 
+     */
     reactionsCharacter() {
         if (this.isDead()) this.gameOver();
         else if (this.isHurt()) {
@@ -177,6 +197,10 @@ class Character extends MovableObject {
         else this.playAnimation(this.IMAGES_IDLE);
     }
 
+    /**
+     * Splits the jumping animation into take-off and landing and lets it play once without repeating.
+     * 
+     */
     activityAboveGround() {
         this.activeJump = false;
         if (this.speedY > 0) this.playAnimationNoLoop(this.IMAGES_JUMP_GOINGUP);
@@ -186,6 +210,10 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+     * Randomly picks a jump sound from the array and plays the sound. Then it waits a second until a random sound can be played again.
+     * 
+     */
     playSoundJumping() {
         let jumpSound = Math.floor(Math.random() * 5);
         if (noises) this.SOUND_JUMPING[jumpSound].play();
@@ -195,6 +223,10 @@ class Character extends MovableObject {
         }, 1000);
     }
 
+    /**
+     * Randomly picks an injury sound from the array and plays the sound. Then it waits a second until a random sound can be played again.
+     * 
+     */
     playSoundHurting() {
         let hurtSound = Math.floor(Math.random() * 5);
         if (noises) this.SOUND_HURT[hurtSound].play();
@@ -204,6 +236,10 @@ class Character extends MovableObject {
         }, 1000);
     }
 
+    /**
+     * When the character dies, the death animation starts, which only plays once. In addition, the character slides down out of the screen and the end screen function is loaded.
+     * 
+     */
     gameOver() {
         this.win += 2
         if (this.win == 5) {
@@ -217,6 +253,10 @@ class Character extends MovableObject {
         setTimeout(() => { this.endscreen(); }, 2000);
     }
 
+    /**
+     * Checks whether the game is over and switches from the canvas view to the game over display. The game over sound is played.
+     * 
+     */
     endscreen() {
         if (!this.gameIsOver) {
             document.getElementById('canvas').classList.add('d-none');
@@ -231,6 +271,10 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+     * Check whether the level is completed and play the victory sound. It calls up the character's winning animation and saves the earned coins and health.
+     * 
+     */
     winning() {
         if (!this.gameEnd) this.win += 3;
         if (level == 2) this.gameEnd = true;
@@ -244,6 +288,10 @@ class Character extends MovableObject {
         }, 3000);
     }
 
+    /**
+     * Makes the character jump back and forth with joy at the victory.
+     * 
+     */
     winningMoveAnimation() {
         this.y = 135;
         this.x = world.lastCheckpoint.x + 2100;
@@ -259,6 +307,10 @@ class Character extends MovableObject {
         }, 1100);
     }
 
+    /**
+     * Plays the level completed sound, switches from the canvas view to the level completed display and initiates the final result function.
+     * 
+     */
     winscreen() {
         document.getElementById('canvas').classList.add('d-none');
         document.getElementById('levelCompleteImage').classList.remove('d-none');
@@ -270,6 +322,10 @@ class Character extends MovableObject {
         this.SOUND_LEVELCOMPLETE.play();
     }
 
+    /**
+     * Unlocks the results display and plays the counter sound. The functions for counting up life points are called.
+     * 
+     */
     countPoints() {
         this.unlockCounterInDocument();
         let coinsCountIV = setInterval(() => {
@@ -283,6 +339,10 @@ class Character extends MovableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Plays the counter sound and counts up the life points. The function for the overall result is then called.
+     * 
+     */
     startLifeCounting() {
         let lifeCountIV = setInterval(() => {
             this.SOUND_COUNTER.play();
@@ -295,23 +355,46 @@ class Character extends MovableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Calculates the total of both values.
+     * 
+     */
     startFinalResultCounting() {
         this.result = Math.round((this.counterCoins + this.counterLife) / 2);
         this.showFinalResult(this.result);
     }
 
+    /**
+     * The values folder is made visible in HTML.
+     * 
+     */
     unlockCounterInDocument() {
         document.getElementById('counts').classList.remove('d-none');
     }
 
+    /**
+     * The collected coins are loaded and displayed in the corresponding HTML field.
+     * 
+     * @param {*} count - value of the coins in percent.
+     */
     showFinalCoins(count) {
         document.getElementById('countResultCoins').innerHTML = `${count}%`;
     }
 
+    /**
+     * The collected healthpoints are loaded and displayed in the corresponding HTML field.
+     * 
+     * @param {*} count  - value of the health in percent.
+     */
     showFinalLife(count) {
         document.getElementById('countResultLife').innerHTML = `${count}%`;
     }
 
+    /**
+     * The final result is loaded and displayed in the corresponding HTML field.
+     * 
+     * @param {*} count  - value of the final result in percent.
+     */
     showFinalResult(count) {
         document.getElementById('countResult').innerHTML = `${count}%`;
     }

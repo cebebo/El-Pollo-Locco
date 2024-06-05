@@ -33,12 +33,21 @@ class ThrowableObject extends MovableObject {
         this.bottleBroken();
     }
 
+    /**
+     * Sets the throwing direction and strength of the bottle.
+     * 
+     */
     throw() {
         let power = world.power;
         if (direction == 'right') this.throwToTheRight(power);
         else this.throwToTheLeft(power);
     }
 
+    /**
+     * Causes the bottle to fly to the right using gravity.
+     * 
+     * @param {integer} power - Value of chosen power.
+     */
     throwToTheRight(power) {
         this.speedY = power * 1.8;
         this.applyGravity();
@@ -48,6 +57,11 @@ class ThrowableObject extends MovableObject {
         }, 25)
     }
 
+    /**
+     * Causes the bottle to fly to the left using gravity.
+     * 
+     * @param {*} power - Value of chosen power.
+     */
     throwToTheLeft(power) {
         this.speedY = power * 1.8;
         this.applyGravity();
@@ -57,6 +71,10 @@ class ThrowableObject extends MovableObject {
         }, 25)
     }
 
+    /**
+     * Starts the rotating animation of the bottle.
+     * 
+     */
     animate() {
         let flyBottle = setInterval(() => {
             if (this.y < 280 && !this.broken) this.playAnimation(this.IMAGES_BOTTLEFLIP);
@@ -68,6 +86,10 @@ class ThrowableObject extends MovableObject {
         }, 75);
     }
 
+    /**
+     * Starts the bottle breaking animation.
+     * 
+     */
     bottleBroken() {
         let IVbottleBroken = setInterval(() => {
             if (this.broken) {

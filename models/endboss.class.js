@@ -80,6 +80,10 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Checks the status of the final boss and starts the corresponding animations.
+     * 
+     */
     animate() {
         setInterval(() => {
             if (this.animationEndbossStart) {       
@@ -93,6 +97,10 @@ class Endboss extends MovableObject {
         }, 150);
     }
 
+    /**
+     * Sets the running area for the final boss and determines at which point it changes direction and initiates the running animation.
+     * 
+     */
     checkDirection() {
         if (this.x < world.lastCheckpoint.x + 1800) this.forward = false;
         if (this.x > world.lastCheckpoint.x + 2350) this.forward = true;
@@ -100,6 +108,10 @@ class Endboss extends MovableObject {
         this.playAnimation(this.IMAGES_WALKING);
     }
 
+    /**
+     * Determines in which direction the final boss runs and at what speed.
+     * 
+     */
     walkDirection() {
         if (this.forward) {
             this.moveLeft();
@@ -113,10 +125,19 @@ class Endboss extends MovableObject {
         song = 1
     }
 
+    /**
+     * Returns the value at which the boss enters alarm mode.
+     * 
+     * @returns - Distance of the final boss to the character.
+     */
     alertMode() {
         return (world.character.x + levelValues[level-1].distanceFollow) > this.x && (world.character.x + world.character.width - levelValues[level-1].distanceFollow) < this.x + this.width;
     }
 
+    /**
+     * Starts tracking the character, changes the running animation and starts the background music.
+     * 
+     */
     followCharacter() {
         if (noises) this.SOUND_START.play();
         this.speed = levelValues[level-1].endbossFollow;
@@ -128,10 +149,19 @@ class Endboss extends MovableObject {
         if (world.character.isDead()) music = false;
     }
 
+    /**
+     * Returns the value at which the boss enters attack mode.
+     * 
+     * @returns - Distance of the final boss to the character.
+     */
     attackMode() {
         return (world.character.x + levelValues[level-1].distanceAttack) > this.x && (world.character.x + world.character.width - levelValues[level-1].distanceAttack) < this.x + this.width;
     }
 
+    /**
+     * Changes the running animation and checks, if character is dead.
+     * 
+     */
     attackCharacter() {
         if (noises) if (!world.character.isDead()) this.SOUND_ATTACK.play();
         this.speed = levelValues[level-1].endbossAttack;
@@ -143,6 +173,10 @@ class Endboss extends MovableObject {
         if (world.character.isDead()) music = false;
     }
 
+    /**
+     * Checks whether the final boss is frozen, makes him stand still, changes the animation and sets how long he is frozen.
+     * 
+     */
     freezed() {
         if (this.freeze) {
             this.loadImage(this.IMAGES_FREEZE);
@@ -152,11 +186,19 @@ class Endboss extends MovableObject {
         song = 2;
     }
 
+    /**
+     * Changes the animation to the hurt animation and plays the hurt sound.
+     * 
+     */
     hurt() {
         this.playAnimation(this.IMAGES_HURT);
         if (noises) this.SOUND_HURT.play();
     }
 
+    /**
+     * Plays the final boss's death animation and plays the death sound.
+     * 
+     */
     dead() {
         this.freeze = false;
         this.playAnimation(this.IMAGES_DEAD);

@@ -51,10 +51,18 @@ class World extends Draw {
         this.run();
     }
 
+    /**
+     * Assigns the current world class to the character.
+     * 
+     */
     setWorld() {
         this.character.world = this;
     }
 
+    /**
+     * Starts all intervals for the game and stops camera tracking when the final boss appears.
+     * 
+     */
     run() {
         setInterval(() => {
             this.checkCollisions();
@@ -68,22 +76,39 @@ class World extends Draw {
         }, 50);
     }
 
+    /**
+     * Sets the character back to the correct height position after landing a jump.
+     * 
+     */
     correctPosition() {
         if (this.character.y > 135 && this.statusBar.percentage > 0) this.character.y = 135;
     }
 
+    /**
+     * Remove enemy corpses that are left lying around.
+     * 
+     */
     corpseEraser() {
         this.enemies.forEach((enemy) => {
             if (enemy.img.src == 'img/3_enemies_chicken/chicken_small/2_dead/dead.png') this.deadEnemy(enemy);
         })
     }
 
+    /**
+     * Add up all the coins you can collect throughout the level.
+     * 
+     * @returns - Amount of all Coins in level.
+     */
     checkMaxCoins() {
         let counter = 0;
         for (let i = 0; i < this.level.checkpoints.length; i++) counter += this.level.checkpoints[i].COINS;
         return counter + this.level.coins.length;
     }
 
+    /**
+     * Switches from charging mode to throwing mode when throwing a bottle.
+     * 
+     */
     checkThrowObjects() {
         if (this.keyboard.SPACE && this.bottlesBar.percentage > 0 && this.bottleKiller) {
             this.loadPowerLineForThrowing();
@@ -93,6 +118,10 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Charges the charging bar and makes it visually grow in width until a maximum value is reached.
+     * 
+     */
     loadPowerLineForThrowing() {
         this.active = true;
         this.power++;
@@ -101,6 +130,10 @@ class World extends Draw {
         this.powerLine.width = (this.power * 6);
     }
 
+    /**
+     * Starts throwing the bottle after charging and plays the throwing sound.
+     * 
+     */
     throwBottleAfterLoading() {
         this.bottleKiller = false;
         let bottle = new ThrowableObject(this.character.x + 70, this.character.y + 150);
@@ -113,6 +146,10 @@ class World extends Draw {
         if (noises) this.character.SOUND_SHOT.play();
     }
 
+    /**
+     * Switches from charging mode to farting mode when starting a fart.
+     * 
+     */
     checkFarting() {
         if (this.keyboard.DOWN && this.beansBar.percentage > 0) {
             this.loadPowerLineForFarting();
@@ -122,6 +159,10 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Charges the charging bar and makes it visually grow in width until a maximum value is reached.
+     * 
+     */
     loadPowerLineForFarting() {
         this.activeFart = true;
         this.fartStrength++;
@@ -130,6 +171,10 @@ class World extends Draw {
         this.powerLine.width = (this.fartStrength * 6);
     }
 
+    /**
+     * Starts farting after charging, plays the farting sound and changes the beans-bar.
+     * 
+     */
     fartAfterLoading() {
         if (noises) this.SOUND_FART.play();
         let currentFart = new FartableObject(this.character.x + this.checkFartDirection(), this.character.y + 190);
@@ -147,11 +192,20 @@ class World extends Draw {
         this.fartStrength = 0;
     }
 
+    /**
+     * Check which direction the fart is facing.
+     * 
+     * @returns - If return ist 'right' the fart will go to the left.
+     */
     checkFartDirection() {
         if (direction == 'right') return -((this.fartStrength * 4) - 30);
         else return 115;
     }
 
+    /**
+     * Checks all collisions between all objects.
+     * 
+     */
     checkCollisions() {
         this.collisionsWithEnemies();
         this.collisionsWithCacti();
@@ -160,6 +214,10 @@ class World extends Draw {
         this.collisionOfFartWithEndboss();
     }
 
+    /**
+     * Checks all collisions with the enemies.
+     * 
+     */
     collisionsWithEnemies() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) this.characterMeetsEnemy(enemy);
@@ -174,6 +232,12 @@ class World extends Draw {
         });
     }
 
+    /**
+     * Check which enemy type was hit to determine the corresponding effect.
+     * 
+     * @param {variable} enemy - Variable of the enemy.
+     * @param {variable} flyingBottle - Variable of the bottle.
+     */
     checkEnemyType(enemy, flyingBottle) {
         if (enemy instanceof Chick || enemy instanceof Chicken) {
             this.deadEnemy(enemy);
@@ -189,6 +253,10 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Causes the bottle to break and disappear when dropped on the ground.
+     * 
+     */
     collisionOfBottleWithGround() {
         setInterval(() => {
             this.throwableObjects.forEach((bottle) => {
@@ -202,6 +270,10 @@ class World extends Draw {
         }, 1000 / 60);
     }
 
+    /**
+     * Checks all collisions with the cactus.
+     * 
+     */
     collisionsWithCacti() {
         this.character.speed = levelValues[level - 1].speedCharacter;
         this.level.cacti.forEach((cactus) => {
@@ -219,6 +291,10 @@ class World extends Draw {
         });
     }
 
+    /**
+     * Checks all collisions of fart with the final boss.
+     * 
+     */
     collisionOfFartWithEndboss() {
         if (this.runningFart.length > 0) {
             this.level.enemies.forEach((endboss) => {
@@ -229,6 +305,10 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Checks all collisions of the character with the checkpoints.
+     * 
+     */
     collisionWithCheckpoint() {
         this.level.checkpoints.forEach((checkpoint) => {
             if (this.character.isColliding(checkpoint) && this.activeCheckpoint) {
@@ -241,6 +321,11 @@ class World extends Draw {
         })
     }
 
+    /**
+     * Loads and spawns new enemies, clouds and collectables.
+     * 
+     * @param {variable} checkpoint - Variable of the checkpoints.
+     */
     spawnObjectsInNextArea(checkpoint) {
         for (let i = 0; i < checkpoint.ENEMIES; i++) {
             let randomEnemy = Math.floor(Math.random() * 2);
@@ -256,17 +341,26 @@ class World extends Draw {
         if (gameCheckpoint == this.checkpoints.length) this.enemies.push(new Endboss());
     }
 
+    /**
+     * Expands the landscape in the background.
+     * 
+     */
     buildMoreLandscape() {
         this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/air.png', 719 * (gameCheckpoint * 2)));
-        this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719 * (gameCheckpoint * 2)));
-        this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719 * (gameCheckpoint * 2)));
-        this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719 * (gameCheckpoint * 2)));
         this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/air.png', 719 * (gameCheckpoint * 2 + 1)));
+        this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719 * (gameCheckpoint * 2)));
         this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719 * (gameCheckpoint * 2 + 1)));
+        this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719 * (gameCheckpoint * 2)));
         this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719 * (gameCheckpoint * 2 + 1)));
+        this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719 * (gameCheckpoint * 2)));        
         this.backgroundObjects.push(new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719 * (gameCheckpoint * 2 + 1)));
     }
 
+    /**
+     * Causes the cactus to die and plays the death sound.
+     * 
+     * @param {variable} cactus - Variable of the killed cactus.
+     */
     deadCactus(cactus) {
         let killedCactus = this.cacti.indexOf(cactus);
         cactus.dead = true;
@@ -277,6 +371,11 @@ class World extends Draw {
         }, 1000);
     }
 
+    /**
+     * Check how the character touches the opponent.
+     * 
+     * @param {variable} enemy - Variable of the touched enemy.
+     */
     characterMeetsEnemy(enemy) {
         if (!this.character.aboveGround()) {
             this.character.hit();
@@ -288,6 +387,11 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Kills the chicken and the chick with jump attack and plays the corresponding sound.
+     * 
+     * @param {variable} enemy - Variable of attacked enemy.
+     */
     killChickAndChicken(enemy) {
         this.character.jump();
         if (noises) this.SOUND_JUMPATTACK.play();
@@ -297,6 +401,11 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Kills the final boss and plays the corresponding sound.
+     * 
+     * @param {variable} enemy - Variable of the final boss.
+     */
     killEndboss(enemy) {
         this.enemyKiller = false;
         enemy.hit();
@@ -307,6 +416,11 @@ class World extends Draw {
         setTimeout(() => { this.enemyKiller = true }, 1000);
     }
 
+    /**
+     * Check whether the enemy is a chicken or a chick and let it die with the corresponding dying sound.
+     * 
+     * @param {variable} enemy - Variable of the killed enemy.
+     */
     deadEnemy(enemy) {
         let killedEnemy = this.enemies.indexOf(enemy);
         enemy.dead = true;
@@ -319,6 +433,11 @@ class World extends Draw {
         }, 500);
     }
 
+    /**
+     * Check whether the final boss is dead and make him disappear after a certain amount of time.
+     * 
+     * @param {variable} enemy - Variable of the final boss.
+     */
     checkIfEndbossIsKilled(enemy) {
         if (enemy.energy <= 0) {
             enemy.deadEndboss = true;
@@ -326,6 +445,10 @@ class World extends Draw {
         }
     }
 
+    /**
+     * Checks whether the character has a collision with a collectible object.
+     * 
+     */
     checkCollectables() {
         this.level.coins.forEach((coin) => {
             if (this.character.isColliding(coin) && this.coinsBar.percentage < 100) this.collectCoin(coin);
@@ -338,6 +461,11 @@ class World extends Draw {
         });
     }
 
+    /**
+     * Collect the coin and pass the value to the coins-bar on the display.
+     * 
+     * @param {variable} coin - Variable of collected coin.
+     */
     collectCoin(coin) {
         let hitCoin = this.coins.indexOf(coin);
         this.coins.splice(hitCoin, 1);
@@ -346,6 +474,11 @@ class World extends Draw {
         this.coinsBar.setPercentage(this.coinsBar.percentage, this.coinsBar.STATUS_COINS);
     }
 
+    /**
+     * Collect the bottle and pass the value to the bottles-bar on the display.
+     * 
+     * @param {variable} bottle - Variable of collected bottle.
+     */
     collectBottle(bottle) {
         let hitBottle = this.bottles.indexOf(bottle);
         this.bottles.splice(hitBottle, 1);
@@ -354,6 +487,11 @@ class World extends Draw {
         this.bottlesBar.setPercentage(this.bottlesBar.percentage, this.bottlesBar.STATUS_BOTTLES);
     }
 
+    /**
+     * Collect the bean and pass the value to the beans-bar on the display.
+     * 
+     * @param {variable} bean - Variable of collected bean.
+     */
     collectBean(bean) {
         let hitBean = this.beans.indexOf(bean);
         this.beans.splice(hitBean, 1);

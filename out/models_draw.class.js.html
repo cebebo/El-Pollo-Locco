@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/draw.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/draw.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>class Draw extends MovableObject {
+
+    /**
+     * determined the order level of the objects to be painted.
+     * 
+     */
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.stopCamera()) this.ctx.translate(this.camera_x, 0);
+        else this.ctx.translate(-(this.lastCheckpoint.x + 1850), 0);
+        this.drawMovableScreenContent();
+        if (this.stopCamera()) this.ctx.translate(-this.camera_x, 0);
+        else this.ctx.translate(this.lastCheckpoint.x + 1850, 0);
+        this.drawFixedScreenContent();
+        this.drawWhenPressedButton();
+        let self = this;
+        requestAnimationFrame(function () {
+            self.draw();
+        });
+    }
+
+    /**
+     * Stops the tracking camera when the character reaches the end of the level.
+     * 
+     * @returns - Variable when the character's position reaches 1950 pixels past the last checkpoint.
+     */
+    stopCamera() {
+        return this.character.x &lt; this.lastCheckpoint.x + 1950;
+    }
+
+    /**
+     * Draws all objects that move with the camera in the correct order.
+     * 
+     */
+    drawMovableScreenContent() {
+        this.drawEnvironment();
+        this.drawText();
+        this.drawCollectables();
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.throwableObjects);
+        this.drawEnemies();
+        this.addObjectsToMap(this.runningFart);
+        this.addObjectsToMap(this.checkpoints);
+    }
+
+    /**
+     * Draws all objects that do not move with the camera, but are anchored to the screen, in the correct arrangement.
+     * 
+     */
+    drawFixedScreenContent() {
+        this.drawBars();
+        this.addObjectsToMap(touchController);
+    }
+
+    /**
+     * Sets the current level's lettering to the beginning of the level.
+     * 
+     */
+    drawText() {
+        this.ctx.font = "40px Berlin Sans FB";
+        this.ctx.strokeText(`Level ${level}`, 40, 90);
+    }
+
+    /**
+     * Displays the loading bar on the screen when the spacebar or down arrow key is pressed.
+     * 
+     */
+    drawWhenPressedButton() {
+        if (this.keyboard.SPACE || this.keyboard.DOWN) this.addToMap(this.powerLine);
+    }
+
+    /**
+     * Draws all collectible objects on the screen.
+     * 
+     */
+    drawCollectables() {
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.level.beans);
+    }
+
+    /**
+     * Draws all bars on the screen.
+     * 
+     */
+    drawBars() {
+        this.addToMap(this.statusBar);
+        this.addToMap(this.bottlesBar);
+        this.addToMap(this.coinsBar);
+        this.addToMap(this.beansBar);
+        if (this.endbossBarActive) this.addToMap(this.endbossBar);
+    }
+
+    /**
+     * Draws all enemies on the screen.
+     * 
+     */
+    drawEnemies() {
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.cacti);
+    }
+
+    /**
+     * Draws all background environmental elements on the screen.
+     * 
+     */
+    drawEnvironment() {
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.clouds);
+    }
+
+    /**
+     * Takes each value from an array and draws it onto the screen.
+     * 
+     * @param {variable} objects - Array containing multiple graphics.
+     */
+    addObjectsToMap(objects) {
+        objects.forEach(o => {
+            this.addToMap(o);
+        });
+    }
+
+    /**
+     * Draws the graphic of the specified variable on the screen and checks whether the graphic should be displayed original or mirrored.
+     * 
+     * @param {variable} mo - Contains the file path of the graphic.
+     */
+    addToMap(mo) {
+        if (mo.otherDirection) { this.flipImage(mo); }
+        mo.draw(this.ctx);
+        // mo.drawFrame(this.ctx);
+        if (mo.otherDirection) { this.flipImageBack(mo); }
+    }
+
+    /**
+     * Mirrors the graphic.
+     * 
+     * @param {variable} mo - Displays the file path of the graphic to be mirrored.
+     */
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = mo.x * -1;
+    }
+
+    /**
+     * Mirrors the graphic back to original.
+     * 
+     * @param {variable} mo - Displays the file path of the graphic to be mirrored back to original.
+     */
+    flipImageBack(mo) {
+        mo.x = mo.x * -1;
+        this.ctx.restore();
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#MuteAudio">MuteAudio</a></li><li><a href="global.html#allButtonsUnpressed">allButtonsUnpressed</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#checkLevel">checkLevel</a></li><li><a href="global.html#checkTouchControll">checkTouchControll</a></li><li><a href="global.html#checkTouchDown">checkTouchDown</a></li><li><a href="global.html#checkTouchLeft">checkTouchLeft</a></li><li><a href="global.html#checkTouchRight">checkTouchRight</a></li><li><a href="global.html#checkTouchSpace">checkTouchSpace</a></li><li><a href="global.html#checkTouchUp">checkTouchUp</a></li><li><a href="global.html#closePopUp">closePopUp</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#enterFullscreen">enterFullscreen</a></li><li><a href="global.html#exitFullscreen">exitFullscreen</a></li><li><a href="global.html#fullscreen">fullscreen</a></li><li><a href="global.html#hideCounterInDocument">hideCounterInDocument</a></li><li><a href="global.html#hideSettings">hideSettings</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#nextLevel">nextLevel</a></li><li><a href="global.html#openPopUp">openPopUp</a></li><li><a href="global.html#openSettings">openSettings</a></li><li><a href="global.html#prepareScreenForRestart">prepareScreenForRestart</a></li><li><a href="global.html#prepareStartScreen">prepareStartScreen</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#settingsLevel1">settingsLevel1</a></li><li><a href="global.html#settingsLevel2">settingsLevel2</a></li><li><a href="global.html#showSettings">showSettings</a></li><li><a href="global.html#startGame">startGame</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu May 23 2024 21:12:21 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

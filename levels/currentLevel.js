@@ -1,3 +1,7 @@
+/**
+ * Includes all objects loaded at the start of the current level.
+ * 
+ */
 let currentLevel = new Level(
     [],
     [
@@ -32,13 +36,13 @@ let currentLevel = new Level(
     ],
     [],
     [   // (Position x, Amount Enemies, Amount Cacti, Amount Coins, Amount Bottles, Amount Beans)
-        new Checkpoint(300, 1, 1, 2, 3, 3)
-        // new Checkpoint(1500, 1, 1, 2, 3, 3),
-        // new Checkpoint(2700, 1, 1, 3, 3, 3),
-        // new Checkpoint(3900, 1, 1, 4, 2, 3),
-        // new Checkpoint(5200, 1, 1, 3, 3, 4),
-        // new Checkpoint(6400, 1, 1, 2, 4, 3),
-        // new Checkpoint(7600, 0, 1, 3, 5, 2)
+        new Checkpoint(300, 1, 1, 2, 3, 3),
+        new Checkpoint(1500, 1, 1, 2, 3, 3),
+        new Checkpoint(2700, 1, 1, 3, 3, 3),
+        new Checkpoint(3900, 1, 1, 4, 2, 3),
+        new Checkpoint(5200, 1, 1, 3, 3, 4),
+        new Checkpoint(6400, 1, 1, 2, 4, 3),
+        new Checkpoint(7600, 0, 1, 3, 5, 2)
     ]
 );
 

@@ -10,11 +10,18 @@ class Cloud extends MovableObject {
         this.x = x + Math.random() * 2300;
         this.animate();
     }
-
+    /**
+     * Animates the clouds to move to the left.
+     * 
+     */
     animate() {
         this.moveLeft();
     }
 
+    /**
+     * Determines the left movement and the position of the clouds.
+     * 
+     */
     moveLeft() {
         setInterval(() => {
             this.x -= this.speed;

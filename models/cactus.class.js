@@ -25,6 +25,10 @@ class Cactus extends MovableObject {
         this.killedCactus();
     }
 
+    /**
+     * Sets the current size and position of the cactus and checks whether the cactus is still alive and should continue to grow or whether it is dying.
+     * 
+     */
     growingCactus() {
         let fixedHeight = this.height;
         let fixedWidth = this.width;
@@ -39,6 +43,12 @@ class Cactus extends MovableObject {
         }
     }
 
+    /**
+     * Allows the cactus to grow by 10% over a certain period of time and calculates the new position by changing the size. When the maximum size is reached, growth stops.
+     * 
+     * @param {number} fixedHeight - final hight of the cactus
+     * @param {number} fixedWidth - final width of the cactus
+     */
     letItGrow(fixedHeight, fixedWidth) {
         let growing = setInterval(() => {
             if (!this.dead && !settings) {
@@ -55,6 +65,10 @@ class Cactus extends MovableObject {
         }, levelValues[level-1].cactusGrow);
     }
 
+    /**
+     * Checks whether the cactus is dead and plays the death animation.
+     * 
+     */
     killedCactus() {
         let IVdeadCactus = setInterval(() => {
             if (this.dead) {

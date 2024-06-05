@@ -27,6 +27,10 @@ class Chick extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Animates the movement of the chick and makes it change direction after a randomly determined time has elapsed.
+     * 
+     */
     animate() {
         this.turnAroundTime = this.setTimeToTurnAround();
         this.counter = 0;
@@ -37,6 +41,10 @@ class Chick extends MovableObject {
         this.chickWalk();
     }
 
+    /**
+     * Counts the time until you reach the randomly determined number and then randomly changes the running direction and running speed.
+     * 
+     */
     checkTurnAroundTime() {
         if (this.counter > this.turnAroundTime * 60) {
             this.counter = 0;
@@ -53,6 +61,10 @@ class Chick extends MovableObject {
         }
     }
 
+    /**
+     * Plays the running animation as long as the chick is alive. When it dies, it shows a dead chick.
+     * 
+     */
     chickWalk() {
         setInterval(() => {
             if (!this.dead) {
@@ -61,6 +73,11 @@ class Chick extends MovableObject {
         }, 150);
     }
 
+    /**
+     * Generates a random number between 1 and 10.
+     * 
+     * @returns - Returns the randomly generated number to determine the time and direction of the chick.
+     */
     setTimeToTurnAround() {
         return Math.random() * 10;
     }

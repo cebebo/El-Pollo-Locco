@@ -33,6 +33,11 @@ let levelValues = [
     }
 ];
 
+/**
+ * Includes all objects loaded at the start of the first level.
+ * 
+ * @returns - Objects, that are loades at the beginning.
+ */
 function settingsLevel1() {
     return new Level(
         [],
@@ -42,17 +47,19 @@ function settingsLevel1() {
         ],
         [
             new BackgroundObject('img/5_background/layers/air.png', -719),
-            new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
-            new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
-            new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
-
             new BackgroundObject('img/5_background/layers/air.png', 0),
-            new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
-            new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
-            new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/air.png', 719),
+
+            new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
+            new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719),
+
+            new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
+            new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719),
+
+            new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
+            new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719)
         ],
         [
@@ -79,6 +86,11 @@ function settingsLevel1() {
     );
 }
 
+/**
+ * Includes all objects loaded at the start of the second level.
+ * 
+ * @returns - Objects, that are loades at the beginning.
+ */
 function settingsLevel2() {
     return new Level(
         [],
@@ -88,17 +100,19 @@ function settingsLevel2() {
         ],
         [
             new BackgroundObject('img/5_background/layers/air.png', -719),
-            new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
-            new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
-            new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
-
             new BackgroundObject('img/5_background/layers/air.png', 0),
-            new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
-            new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
-            new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/air.png', 719),
+
+            new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
+            new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719),
+
+            new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
+            new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719),
+
+            new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
+            new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
             new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719)
         ],
         [
